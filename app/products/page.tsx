@@ -200,7 +200,7 @@ export default function ProductsPage() {
                 </td>
                 <td className="px-4 py-3.5 text-sm text-slate-500">{p.brand}</td>
                 <td className="px-4 py-3.5">
-                  <span className={`text-xs font-semibold px-2 py-1 rounded-full ${CAT_STYLE[p.category]}`}>{p.category}</span>
+                  <span className={`text-xs font-semibold px-2 py-1 rounded-full whitespace-nowrap ${CAT_STYLE[p.category]}`}>{p.category}</span>
                 </td>
                 <td className="px-4 py-3.5 text-sm text-slate-400">{p.discountRate > 0 ? <span className="line-through">{fmtWon(p.price)}</span> : '—'}</td>
                 <td className="px-4 py-3.5 text-sm">{p.discountRate > 0 ? <span className="text-rose-500 font-bold">{p.discountRate}%</span> : '—'}</td>
@@ -217,7 +217,7 @@ export default function ProductsPage() {
                   </div>
                 </td>
                 <td className="px-4 py-3.5">
-                  <span className={`text-xs font-semibold px-2 py-1 rounded-full ${STATUS_STYLE[p.status]}`}>{p.status}</span>
+                  <span className={`text-xs font-semibold px-2 py-1 rounded-full whitespace-nowrap ${STATUS_STYLE[p.status]}`}>{p.status}</span>
                 </td>
                 <td className="px-4 py-3.5">
                   <div className="flex gap-1.5">

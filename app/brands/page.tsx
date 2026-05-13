@@ -239,7 +239,7 @@ export default function BrandsPage() {
                     </span>
                   </td>
                   <td className="px-4 py-3.5">
-                    <span className={`text-xs font-semibold px-2 py-1 rounded-full ${CAT_STYLE[b.category]}`}>
+                    <span className={`text-xs font-semibold px-2 py-1 rounded-full whitespace-nowrap ${CAT_STYLE[b.category]}`}>
                       {b.category}
                     </span>
                   </td>
@@ -247,7 +247,7 @@ export default function BrandsPage() {
                   <td className="px-4 py-3.5 text-sm text-slate-500">{b.managerPhone}</td>
                   <td className="px-4 py-3.5 text-sm text-slate-500">{b.csPhone || '—'}</td>
                   <td className="px-4 py-3.5">
-                    <span className={`text-xs font-semibold px-2 py-1 rounded-full ${
+                    <span className={`text-xs font-semibold px-2 py-1 rounded-full whitespace-nowrap ${
                       b.status === 'active'
                         ? 'bg-emerald-50 text-emerald-600'
                         : 'bg-slate-100 text-slate-400'

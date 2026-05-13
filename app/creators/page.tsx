@@ -216,12 +216,12 @@ export default function CreatorsPage() {
                   </div>
                 </td>
                 <td className="px-4 py-3.5">
-                  <span className={`text-xs font-semibold px-2 py-1 rounded-md ${PLATFORM_STYLE[c.platform]}`}>
+                  <span className={`text-xs font-semibold px-2 py-1 rounded-md whitespace-nowrap ${PLATFORM_STYLE[c.platform]}`}>
                     {PLATFORM_ICON[c.platform]} {c.platform}
                   </span>
                 </td>
                 <td className="px-4 py-3.5">
-                  <span className={`text-xs font-semibold px-2 py-1 rounded-full bg-pink-50 text-pink-500`}>{c.category}</span>
+                  <span className="text-xs font-semibold px-2 py-1 rounded-full bg-pink-50 text-pink-500 whitespace-nowrap">{c.category}</span>
                 </td>
                 <td className="px-4 py-3.5 text-sm font-semibold">{fmtFollower(c.followers)}</td>
                 <td className="px-4 py-3.5 text-sm font-bold">{c.commissionRate}%</td>
