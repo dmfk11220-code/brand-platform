@@ -21,6 +21,14 @@ interface Product {
   thumbnail: string;
 }
 
+const mockCreators = [
+  { id: '1', name: '김민지', handle: '@minji_fit', hashtags: ['#레깅스', '#홈트', '#운동복'] },
+  { id: '2', name: '박서연', handle: '@seo_beauty', hashtags: ['#뷰티', '#메이크업', '#스킨케어'] },
+  { id: '3', name: '이지호', handle: '@jiho_eats', hashtags: ['#먹방', '#맛집', '#요리'] },
+  { id: '4', name: '최아름', handle: '@arum_style', hashtags: ['#오오티디', '#패션', '#코디'] },
+  { id: '5', name: '한도윤', handle: '@doyoon_life', hashtags: ['#인테리어', '#생활용품', '#살림'] },
+];
+
 const mockProducts: Product[] = [
   { id: '1', name: '에어핏 레깅스 블랙', brand: '젝시믹스', category: '스포츠', price: 59000, discountRate: 10, stock: 342, status: '판매중', sales: 1823, hashtags: ['#레깅스', '#minji_fit'], createdAt: '2024-01-20', thumbnail: '🩱' },
   { id: '2', name: '무결점 쿠션 SPF50+', brand: '어뮤즈', category: '뷰티', price: 38000, discountRate: 0, stock: 0, status: '품절', sales: 4201, hashtags: ['#뷰티', '#seo_beauty'], createdAt: '2024-02-14', thumbnail: '💄' },
@@ -274,10 +282,28 @@ export default function ProductsPage() {
                   </select>
                 </Field>
               </div>
+              <Field label="크리에이터 선택">
+                <select
+                  className={inputCls}
+                  value=""
+                  onChange={e => {
+                    const creator = mockCreators.find(c => c.id === e.target.value);
+                    if (!creator) return;
+                    const existing = (form.hashtagInput || '').trim();
+                    const newTags = creator.hashtags.join(' ');
+                    set('hashtagInput', existing ? `${existing} ${newTags}` : newTags);
+                  }}
+                >
+                  <option value="">크리에이터 선택 시 해시태그 자동 추가</option>
+                  {mockCreators.map(c => (
+                    <option key={c.id} value={c.id}>{c.name} ({c.handle})</option>
+                  ))}
+                </select>
+              </Field>
               <Field label="크리에이터 해시태그">
                 <input value={form.hashtagInput || ''} onChange={e => set('hashtagInput', e.target.value)}
                   placeholder="#크리에이터명 #태그 (스페이스로 구분)" className={inputCls} />
-                <p className="text-[11px] text-slate-400 mt-1"># 포함하여 입력, 스페이스로 구분</p>
+                <p className="text-[11px] text-slate-400 mt-1"># 포함하여 입력하거나 위에서 크리에이터 선택</p>
               </Field>
             </div>
             <div className="flex justify-end gap-2 px-7 py-5 border-t border-slate-100">
