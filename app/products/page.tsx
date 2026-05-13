@@ -16,6 +16,7 @@ interface Product {
   stock: number;
   status: ProductStatus;
   sales: number;
+  creatorId: string;
   hashtags: string[];
   createdAt: string;
   thumbnail: string;
@@ -30,13 +31,13 @@ const mockCreators = [
 ];
 
 const mockProducts: Product[] = [
-  { id: '1', name: '에어핏 레깅스 블랙', brand: '젝시믹스', category: '스포츠', price: 59000, discountRate: 10, stock: 342, status: '판매중', sales: 1823, hashtags: ['#레깅스', '#minji_fit'], createdAt: '2024-01-20', thumbnail: '🩱' },
-  { id: '2', name: '무결점 쿠션 SPF50+', brand: '어뮤즈', category: '뷰티', price: 38000, discountRate: 0, stock: 0, status: '품절', sales: 4201, hashtags: ['#뷰티', '#seo_beauty'], createdAt: '2024-02-14', thumbnail: '💄' },
-  { id: '3', name: '린넨 와이드 팬츠', brand: 'MANGO', category: '패션', price: 89000, discountRate: 20, stock: 87, status: '판매중', sales: 632, hashtags: ['#오오티디', '#arum_style'], createdAt: '2024-03-01', thumbnail: '👖' },
-  { id: '4', name: '유기농 그래놀라 500g', brand: '마켓컬리', category: '식품', price: 14900, discountRate: 5, stock: 1204, status: '판매중', sales: 3871, hashtags: ['#먹방', '#jiho_eats'], createdAt: '2024-03-10', thumbnail: '🥣' },
-  { id: '5', name: '모던 수납 선반 3단', brand: '한샘', category: '생활', price: 129000, discountRate: 15, stock: 43, status: '판매중', sales: 287, hashtags: ['#인테리어', '#doyoon_life'], createdAt: '2024-04-05', thumbnail: '🪵' },
-  { id: '6', name: '비건 립밤 라즈베리', brand: '어뮤즈', category: '뷰티', price: 12000, discountRate: 0, stock: 560, status: '숨김', sales: 921, hashtags: ['#비건뷰티'], createdAt: '2024-04-12', thumbnail: '💋' },
-  { id: '7', name: '쿨링 스포츠 탑', brand: '젝시믹스', category: '스포츠', price: 42000, discountRate: 0, stock: 215, status: '판매중', sales: 1102, hashtags: ['#홈트', '#minji_fit'], createdAt: '2024-05-01', thumbnail: '👕' },
+  { id: '1', name: '에어핏 레깅스 블랙', brand: '젝시믹스', category: '스포츠', price: 59000, discountRate: 10, stock: 342, status: '판매중', sales: 1823, creatorId: '1', hashtags: ['#레깅스', '#홈트', '#운동복'], createdAt: '2024-01-20', thumbnail: '🩱' },
+  { id: '2', name: '무결점 쿠션 SPF50+', brand: '어뮤즈', category: '뷰티', price: 38000, discountRate: 0, stock: 0, status: '품절', sales: 4201, creatorId: '2', hashtags: ['#뷰티', '#메이크업', '#스킨케어'], createdAt: '2024-02-14', thumbnail: '💄' },
+  { id: '3', name: '린넨 와이드 팬츠', brand: 'MANGO', category: '패션', price: 89000, discountRate: 20, stock: 87, status: '판매중', sales: 632, creatorId: '4', hashtags: ['#오오티디', '#패션', '#코디'], createdAt: '2024-03-01', thumbnail: '👖' },
+  { id: '4', name: '유기농 그래놀라 500g', brand: '마켓컬리', category: '식품', price: 14900, discountRate: 5, stock: 1204, status: '판매중', sales: 3871, creatorId: '3', hashtags: ['#먹방', '#맛집', '#요리'], createdAt: '2024-03-10', thumbnail: '🥣' },
+  { id: '5', name: '모던 수납 선반 3단', brand: '한샘', category: '생활', price: 129000, discountRate: 15, stock: 43, status: '판매중', sales: 287, creatorId: '5', hashtags: ['#인테리어', '#생활용품', '#살림'], createdAt: '2024-04-05', thumbnail: '🪵' },
+  { id: '6', name: '비건 립밤 라즈베리', brand: '어뮤즈', category: '뷰티', price: 12000, discountRate: 0, stock: 560, status: '숨김', sales: 921, creatorId: '', hashtags: ['#비건뷰티'], createdAt: '2024-04-12', thumbnail: '💋' },
+  { id: '7', name: '쿨링 스포츠 탑', brand: '젝시믹스', category: '스포츠', price: 42000, discountRate: 0, stock: 215, status: '판매중', sales: 1102, creatorId: '1', hashtags: ['#레깅스', '#홈트', '#운동복'], createdAt: '2024-05-01', thumbnail: '👕' },
 ];
 
 const STATUS_STYLE: Record<ProductStatus, string> = {
@@ -118,6 +119,7 @@ export default function ProductsPage() {
         category: form.category as ProductCategory || '패션', price: Number(form.price) || 0,
         discountRate: Number(form.discountRate) || 0, stock: Number(form.stock) || 0,
         status: form.status as ProductStatus || '판매중', sales: 0, hashtags,
+        creatorId: form.creatorId || '',
         createdAt: new Date().toISOString().slice(0, 10), thumbnail: '📦',
       }, ...prev]);
     }
@@ -187,7 +189,7 @@ export default function ProductsPage() {
               <th className="px-4 py-3 w-10">
                 <input type="checkbox" checked={allChecked} onChange={toggleAll} className="rounded border-slate-300 accent-indigo-500" />
               </th>
-              {['상품', '브랜드', '카테고리', '정가', '할인율', '판매가', '재고', '판매량', '해시태그', '상태', '관리'].map(h => (
+              {['상품', '브랜드', '카테고리', '정가', '할인율', '판매가', '재고', '판매량', '크리에이터', '해시태그', '상태', '관리'].map(h => (
                 <th key={h} className="px-4 py-3 text-left text-[11px] font-bold text-slate-400 uppercase tracking-wide whitespace-nowrap">{h}</th>
               ))}
             </tr>
@@ -218,9 +220,20 @@ export default function ProductsPage() {
                 </td>
                 <td className="px-4 py-3.5 text-sm text-slate-600">{p.sales.toLocaleString()}</td>
                 <td className="px-4 py-3.5">
+                  {(() => {
+                    const creator = mockCreators.find(c => c.id === p.creatorId);
+                    return creator ? (
+                      <div>
+                        <p className="text-sm font-semibold text-slate-700">{creator.name}</p>
+                        <p className="text-xs text-slate-400">{creator.handle}</p>
+                      </div>
+                    ) : <span className="text-xs text-slate-300">—</span>;
+                  })()}
+                </td>
+                <td className="px-4 py-3.5">
                   <div className="flex flex-wrap gap-1">
                     {p.hashtags.map(h => (
-                      <span key={h} className="text-[11px] bg-indigo-50 text-indigo-500 px-2 py-0.5 rounded-full font-medium">{h}</span>
+                      <span key={h} className="text-[11px] bg-indigo-50 text-indigo-500 px-2 py-0.5 rounded-full font-medium whitespace-nowrap">{h}</span>
                     ))}
                   </div>
                 </td>
@@ -285,16 +298,14 @@ export default function ProductsPage() {
               <Field label="크리에이터 선택">
                 <select
                   className={inputCls}
-                  value=""
+                  value={form.creatorId || ''}
                   onChange={e => {
                     const creator = mockCreators.find(c => c.id === e.target.value);
-                    if (!creator) return;
-                    const existing = (form.hashtagInput || '').trim();
-                    const newTags = creator.hashtags.join(' ');
-                    set('hashtagInput', existing ? `${existing} ${newTags}` : newTags);
+                    set('creatorId', e.target.value);
+                    if (creator) set('hashtagInput', creator.hashtags.join(' '));
                   }}
                 >
-                  <option value="">크리에이터 선택 시 해시태그 자동 추가</option>
+                  <option value="">선택 안 함</option>
                   {mockCreators.map(c => (
                     <option key={c.id} value={c.id}>{c.name} ({c.handle})</option>
                   ))}
