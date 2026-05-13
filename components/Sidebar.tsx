@@ -6,7 +6,7 @@ import {
   LayoutDashboard,
   Tag,
   Package,
-  Handshake,
+  Users,
   BarChart3,
   Settings,
 } from 'lucide-react';
@@ -15,7 +15,7 @@ const navItems = [
   { href: '/', label: '대시보드', icon: LayoutDashboard },
   { href: '/brands', label: '브랜드 관리', icon: Tag },
   { href: '/products', label: '상품 관리', icon: Package },
-  { href: '/partners', label: '파트너', icon: Handshake },
+  { href: '/creators', label: '크리에이터', icon: Users },
   { href: '/settlement', label: '정산', icon: BarChart3 },
   { href: '/settings', label: '설정', icon: Settings },
 ];

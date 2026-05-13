@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Plus, Search, Pencil, Trash2, Info } from 'lucide-react';
+import { Plus, Search, Pencil, Trash2 } from 'lucide-react';
 
 type ProductStatus = '판매중' | '품절' | '숨김';
 type ProductCategory = '패션' | '뷰티' | '식품' | '생활' | '스포츠' | '기타';
@@ -16,18 +16,19 @@ interface Product {
   stock: number;
   status: ProductStatus;
   sales: number;
+  hashtags: string[];
   createdAt: string;
   thumbnail: string;
 }
 
 const mockProducts: Product[] = [
-  { id: '1', name: '에어핏 레깅스 블랙', brand: '젝시믹스', category: '스포츠', price: 59000, discountRate: 10, stock: 342, status: '판매중', sales: 1823, createdAt: '2024-01-20', thumbnail: '🩱' },
-  { id: '2', name: '무결점 쿠션 SPF50+', brand: '어뮤즈', category: '뷰티', price: 38000, discountRate: 0, stock: 0, status: '품절', sales: 4201, createdAt: '2024-02-14', thumbnail: '💄' },
-  { id: '3', name: '린넨 와이드 팬츠', brand: 'MANGO', category: '패션', price: 89000, discountRate: 20, stock: 87, status: '판매중', sales: 632, createdAt: '2024-03-01', thumbnail: '👖' },
-  { id: '4', name: '유기농 그래놀라 500g', brand: '마켓컬리', category: '식품', price: 14900, discountRate: 5, stock: 1204, status: '판매중', sales: 3871, createdAt: '2024-03-10', thumbnail: '🥣' },
-  { id: '5', name: '모던 수납 선반 3단', brand: '한샘', category: '생활', price: 129000, discountRate: 15, stock: 43, status: '판매중', sales: 287, createdAt: '2024-04-05', thumbnail: '🪵' },
-  { id: '6', name: '비건 립밤 라즈베리', brand: '어뮤즈', category: '뷰티', price: 12000, discountRate: 0, stock: 560, status: '숨김', sales: 921, createdAt: '2024-04-12', thumbnail: '💋' },
-  { id: '7', name: '쿨링 스포츠 탑', brand: '젝시믹스', category: '스포츠', price: 42000, discountRate: 0, stock: 215, status: '판매중', sales: 1102, createdAt: '2024-05-01', thumbnail: '👕' },
+  { id: '1', name: '에어핏 레깅스 블랙', brand: '젝시믹스', category: '스포츠', price: 59000, discountRate: 10, stock: 342, status: '판매중', sales: 1823, hashtags: ['#레깅스', '#minji_fit'], createdAt: '2024-01-20', thumbnail: '🩱' },
+  { id: '2', name: '무결점 쿠션 SPF50+', brand: '어뮤즈', category: '뷰티', price: 38000, discountRate: 0, stock: 0, status: '품절', sales: 4201, hashtags: ['#뷰티', '#seo_beauty'], createdAt: '2024-02-14', thumbnail: '💄' },
+  { id: '3', name: '린넨 와이드 팬츠', brand: 'MANGO', category: '패션', price: 89000, discountRate: 20, stock: 87, status: '판매중', sales: 632, hashtags: ['#오오티디', '#arum_style'], createdAt: '2024-03-01', thumbnail: '👖' },
+  { id: '4', name: '유기농 그래놀라 500g', brand: '마켓컬리', category: '식품', price: 14900, discountRate: 5, stock: 1204, status: '판매중', sales: 3871, hashtags: ['#먹방', '#jiho_eats'], createdAt: '2024-03-10', thumbnail: '🥣' },
+  { id: '5', name: '모던 수납 선반 3단', brand: '한샘', category: '생활', price: 129000, discountRate: 15, stock: 43, status: '판매중', sales: 287, hashtags: ['#인테리어', '#doyoon_life'], createdAt: '2024-04-05', thumbnail: '🪵' },
+  { id: '6', name: '비건 립밤 라즈베리', brand: '어뮤즈', category: '뷰티', price: 12000, discountRate: 0, stock: 560, status: '숨김', sales: 921, hashtags: ['#비건뷰티'], createdAt: '2024-04-12', thumbnail: '💋' },
+  { id: '7', name: '쿨링 스포츠 탑', brand: '젝시믹스', category: '스포츠', price: 42000, discountRate: 0, stock: 215, status: '판매중', sales: 1102, hashtags: ['#홈트', '#minji_fit'], createdAt: '2024-05-01', thumbnail: '👕' },
 ];
 
 const STATUS_STYLE: Record<ProductStatus, string> = {
@@ -37,12 +38,9 @@ const STATUS_STYLE: Record<ProductStatus, string> = {
 };
 
 const CAT_STYLE: Record<ProductCategory, string> = {
-  패션: 'bg-pink-100 text-pink-600',
-  뷰티: 'bg-red-100 text-red-600',
-  식품: 'bg-amber-100 text-amber-700',
-  생활: 'bg-emerald-100 text-emerald-600',
-  스포츠: 'bg-blue-100 text-blue-600',
-  기타: 'bg-slate-100 text-slate-500',
+  패션: 'bg-pink-100 text-pink-600', 뷰티: 'bg-red-100 text-red-600',
+  식품: 'bg-amber-100 text-amber-700', 생활: 'bg-emerald-100 text-emerald-600',
+  스포츠: 'bg-blue-100 text-blue-600', 기타: 'bg-slate-100 text-slate-500',
 };
 
 const CATEGORIES: ProductCategory[] = ['패션', '뷰티', '식품', '생활', '스포츠', '기타'];
@@ -50,75 +48,75 @@ const STATUSES: ProductStatus[] = ['판매중', '품절', '숨김'];
 const BRANDS = ['젝시믹스', '어뮤즈', 'MANGO', '마켓컬리', '한샘'];
 
 const fmtWon = (n: number) => `₩${n.toLocaleString()}`;
+const salePrice = (price: number, rate: number) => rate > 0 ? Math.round(price * (1 - rate / 100)) : price;
+const inputCls = "w-full px-3 py-2 text-sm border border-slate-200 rounded-lg outline-none focus:border-indigo-400 bg-white";
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>(mockProducts);
   const [query, setQuery] = useState('');
   const [catFilter, setCatFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [selected, setSelected] = useState<Set<string>>(new Set());
   const [modalOpen, setModalOpen] = useState(false);
   const [editProduct, setEditProduct] = useState<Product | null>(null);
-  const [form, setForm] = useState<Partial<Product>>({});
+  const [form, setForm] = useState<Partial<Product & { hashtagInput: string }>>({});
 
-  const filtered = useMemo(() =>
-    products.filter(p =>
-      p.name.toLowerCase().includes(query.toLowerCase()) &&
-      (!catFilter || p.category === catFilter) &&
-      (!statusFilter || p.status === statusFilter)
-    ), [products, query, catFilter, statusFilter]);
+  const filtered = useMemo(() => products.filter(p =>
+    p.name.toLowerCase().includes(query.toLowerCase()) &&
+    (!catFilter || p.category === catFilter) &&
+    (!statusFilter || p.status === statusFilter)
+  ), [products, query, catFilter, statusFilter]);
 
-  const stats = useMemo(() => ({
-    total: products.length,
-    onSale: products.filter(p => p.status === '판매중').length,
-    soldOut: products.filter(p => p.status === '품절').length,
-    totalSales: products.reduce((s, p) => s + p.sales, 0),
-  }), [products]);
-
-  const openAdd = () => {
-    setEditProduct(null);
-    setForm({ status: '판매중', category: '패션', discountRate: 0, stock: 0 });
-    setModalOpen(true);
+  const allChecked = filtered.length > 0 && filtered.every(p => selected.has(p.id));
+  const toggleAll = () => {
+    if (allChecked) setSelected(prev => { const s = new Set(prev); filtered.forEach(p => s.delete(p.id)); return s; });
+    else setSelected(prev => { const s = new Set(prev); filtered.forEach(p => s.add(p.id)); return s; });
   };
+  const toggleOne = (id: string) => setSelected(prev => { const s = new Set(prev); s.has(id) ? s.delete(id) : s.add(id); return s; });
 
-  const openEdit = (p: Product) => {
-    setEditProduct(p);
-    setForm({ ...p });
-    setModalOpen(true);
-  };
-
-  const handleSave = () => {
-    if (!form.name?.trim()) return alert('상품명을 입력해주세요.');
-    if (editProduct) {
-      setProducts(prev => prev.map(p => p.id === editProduct.id ? { ...p, ...form } as Product : p));
-    } else {
-      setProducts(prev => [{
-        id: String(Date.now()),
-        name: form.name!,
-        brand: form.brand || BRANDS[0],
-        category: form.category as ProductCategory || '패션',
-        price: Number(form.price) || 0,
-        discountRate: Number(form.discountRate) || 0,
-        stock: Number(form.stock) || 0,
-        status: form.status as ProductStatus || '판매중',
-        sales: 0,
-        createdAt: new Date().toISOString().slice(0, 10),
-        thumbnail: '📦',
-      }, ...prev]);
-    }
-    setModalOpen(false);
+  const handleBulkDelete = () => {
+    if (!selected.size || !confirm(`선택한 ${selected.size}개 상품을 삭제하시겠습니까?`)) return;
+    setProducts(prev => prev.filter(p => !selected.has(p.id)));
+    setSelected(new Set());
   };
 
   const handleDelete = (id: string) => {
     const p = products.find(x => x.id === id);
     if (!p || !confirm(`"${p.name}" 상품을 삭제하시겠습니까?`)) return;
     setProducts(prev => prev.filter(x => x.id !== id));
+    setSelected(prev => { const s = new Set(prev); s.delete(id); return s; });
   };
 
-  const set = (key: keyof Product, value: string | number) =>
-    setForm(prev => ({ ...prev, [key]: value }));
+  const openAdd = () => {
+    setEditProduct(null);
+    setForm({ status: '판매중', category: '패션', discountRate: 0, stock: 0, hashtags: [], hashtagInput: '' });
+    setModalOpen(true);
+  };
 
-  const salePrice = (price: number, rate: number) =>
-    rate > 0 ? Math.round(price * (1 - rate / 100)) : price;
+  const openEdit = (p: Product) => {
+    setEditProduct(p);
+    setForm({ ...p, hashtagInput: p.hashtags.join(' ') });
+    setModalOpen(true);
+  };
+
+  const handleSave = () => {
+    if (!form.name?.trim()) return alert('상품명을 입력해주세요.');
+    const hashtags = (form.hashtagInput || '').split(/\s+/).filter(h => h.startsWith('#') && h.length > 1);
+    if (editProduct) {
+      setProducts(prev => prev.map(p => p.id === editProduct.id ? { ...p, ...form, hashtags } as Product : p));
+    } else {
+      setProducts(prev => [{
+        id: String(Date.now()), name: form.name!, brand: form.brand || BRANDS[0],
+        category: form.category as ProductCategory || '패션', price: Number(form.price) || 0,
+        discountRate: Number(form.discountRate) || 0, stock: Number(form.stock) || 0,
+        status: form.status as ProductStatus || '판매중', sales: 0, hashtags,
+        createdAt: new Date().toISOString().slice(0, 10), thumbnail: '📦',
+      }, ...prev]);
+    }
+    setModalOpen(false);
+  };
+
+  const set = (key: string, value: string | number) => setForm(prev => ({ ...prev, [key]: value }));
 
   return (
     <div className="p-10">
@@ -135,10 +133,10 @@ export default function ProductsPage() {
       {/* Stats */}
       <div className="grid grid-cols-4 gap-4 mb-7">
         {[
-          { label: '전체 상품', value: stats.total, unit: '개' },
-          { label: '판매중', value: stats.onSale, unit: '개' },
-          { label: '품절', value: stats.soldOut, unit: '개' },
-          { label: '누적 판매량', value: stats.totalSales.toLocaleString(), unit: '건' },
+          { label: '전체 상품', value: products.length, unit: '개' },
+          { label: '판매중', value: products.filter(p => p.status === '판매중').length, unit: '개' },
+          { label: '품절', value: products.filter(p => p.status === '품절').length, unit: '개' },
+          { label: '누적 판매량', value: products.reduce((s, p) => s + p.sales, 0).toLocaleString(), unit: '건' },
         ].map(s => (
           <div key={s.label} className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
             <p className="text-xs text-slate-400 font-semibold mb-2">{s.label}</p>
@@ -155,16 +153,22 @@ export default function ProductsPage() {
             className="w-full pl-9 pr-3 py-2 text-sm border border-slate-200 rounded-lg bg-white outline-none focus:border-indigo-400" />
         </div>
         <select value={catFilter} onChange={e => setCatFilter(e.target.value)}
-          className="px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white outline-none focus:border-indigo-400">
+          className="px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white outline-none">
           <option value="">전체 카테고리</option>
           {CATEGORIES.map(c => <option key={c}>{c}</option>)}
         </select>
         <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
-          className="px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white outline-none focus:border-indigo-400">
+          className="px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white outline-none">
           <option value="">전체 상태</option>
           {STATUSES.map(s => <option key={s}>{s}</option>)}
         </select>
         <span className="text-xs text-slate-400 ml-auto">{filtered.length}개 상품</span>
+        {selected.size > 0 && (
+          <button onClick={handleBulkDelete}
+            className="flex items-center gap-1.5 px-3 py-2 bg-rose-500 text-white text-sm font-semibold rounded-lg hover:bg-rose-600 transition-colors">
+            <Trash2 size={13} /> {selected.size}개 삭제
+          </button>
+        )}
       </div>
 
       {/* Table */}
@@ -172,16 +176,22 @@ export default function ProductsPage() {
         <table className="w-full">
           <thead>
             <tr className="bg-slate-50 border-b border-slate-100">
-              {['상품', '브랜드', '카테고리', '정가', '할인율', '판매가', '재고', '판매량', '상태', '관리'].map(h => (
+              <th className="px-4 py-3 w-10">
+                <input type="checkbox" checked={allChecked} onChange={toggleAll} className="rounded border-slate-300 accent-indigo-500" />
+              </th>
+              {['상품', '브랜드', '카테고리', '정가', '할인율', '판매가', '재고', '판매량', '해시태그', '상태', '관리'].map(h => (
                 <th key={h} className="px-4 py-3 text-left text-[11px] font-bold text-slate-400 uppercase tracking-wide whitespace-nowrap">{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {filtered.length === 0 ? (
-              <tr><td colSpan={10} className="py-16 text-center text-slate-400 text-sm">검색 결과가 없습니다.</td></tr>
+              <tr><td colSpan={12} className="py-16 text-center text-slate-400 text-sm">검색 결과가 없습니다.</td></tr>
             ) : filtered.map(p => (
-              <tr key={p.id} className="border-b border-slate-50 last:border-0 hover:bg-slate-50/60 transition-colors">
+              <tr key={p.id} className={`border-b border-slate-50 last:border-0 hover:bg-slate-50/60 transition-colors ${selected.has(p.id) ? 'bg-indigo-50/40' : ''}`}>
+                <td className="px-4 py-3.5">
+                  <input type="checkbox" checked={selected.has(p.id)} onChange={() => toggleOne(p.id)} className="rounded border-slate-300 accent-indigo-500" />
+                </td>
                 <td className="px-4 py-3.5">
                   <div className="flex items-center gap-2.5">
                     <span className="text-2xl">{p.thumbnail}</span>
@@ -192,24 +202,29 @@ export default function ProductsPage() {
                 <td className="px-4 py-3.5">
                   <span className={`text-xs font-semibold px-2 py-1 rounded-full ${CAT_STYLE[p.category]}`}>{p.category}</span>
                 </td>
-                <td className="px-4 py-3.5 text-sm text-slate-400 line-through">{p.discountRate > 0 ? fmtWon(p.price) : '—'}</td>
-                <td className="px-4 py-3.5 text-sm">
-                  {p.discountRate > 0 ? <span className="text-rose-500 font-bold">{p.discountRate}%</span> : '—'}
-                </td>
+                <td className="px-4 py-3.5 text-sm text-slate-400">{p.discountRate > 0 ? <span className="line-through">{fmtWon(p.price)}</span> : '—'}</td>
+                <td className="px-4 py-3.5 text-sm">{p.discountRate > 0 ? <span className="text-rose-500 font-bold">{p.discountRate}%</span> : '—'}</td>
                 <td className="px-4 py-3.5 text-sm font-bold">{fmtWon(salePrice(p.price, p.discountRate))}</td>
                 <td className="px-4 py-3.5 text-sm">
                   <span className={p.stock === 0 ? 'text-rose-400 font-semibold' : 'text-slate-600'}>{p.stock.toLocaleString()}</span>
                 </td>
                 <td className="px-4 py-3.5 text-sm text-slate-600">{p.sales.toLocaleString()}</td>
                 <td className="px-4 py-3.5">
+                  <div className="flex flex-wrap gap-1">
+                    {p.hashtags.map(h => (
+                      <span key={h} className="text-[11px] bg-indigo-50 text-indigo-500 px-2 py-0.5 rounded-full font-medium">{h}</span>
+                    ))}
+                  </div>
+                </td>
+                <td className="px-4 py-3.5">
                   <span className={`text-xs font-semibold px-2 py-1 rounded-full ${STATUS_STYLE[p.status]}`}>{p.status}</span>
                 </td>
                 <td className="px-4 py-3.5">
                   <div className="flex gap-1.5">
-                    <button onClick={() => openEdit(p)} className="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-500 hover:bg-indigo-100 flex items-center justify-center transition-colors">
+                    <button onClick={() => openEdit(p)} className="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-500 hover:bg-indigo-100 flex items-center justify-center">
                       <Pencil size={13} />
                     </button>
-                    <button onClick={() => handleDelete(p.id)} className="w-7 h-7 rounded-lg bg-rose-50 text-rose-500 hover:bg-rose-100 flex items-center justify-center transition-colors">
+                    <button onClick={() => handleDelete(p.id)} className="w-7 h-7 rounded-lg bg-rose-50 text-rose-500 hover:bg-rose-100 flex items-center justify-center">
                       <Trash2 size={13} />
                     </button>
                   </div>
@@ -228,7 +243,7 @@ export default function ProductsPage() {
               <h2 className="text-[17px] font-bold">{editProduct ? '상품 수정' : '상품 추가'}</h2>
               <button onClick={() => setModalOpen(false)} className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 text-lg">✕</button>
             </div>
-            <div className="px-7 py-5 flex flex-col gap-4">
+            <div className="px-7 py-5 flex flex-col gap-3">
               <Field label="상품명" required>
                 <input value={form.name || ''} onChange={e => set('name', e.target.value)} placeholder="상품명 입력" className={inputCls} />
               </Field>
@@ -239,7 +254,7 @@ export default function ProductsPage() {
                     {BRANDS.map(b => <option key={b}>{b}</option>)}
                   </select>
                 </Field>
-                <Field label="카테고리" required>
+                <Field label="카테고리">
                   <select value={form.category || ''} onChange={e => set('category', e.target.value)} className={inputCls}>
                     {CATEGORIES.map(c => <option key={c}>{c}</option>)}
                   </select>
@@ -248,7 +263,7 @@ export default function ProductsPage() {
                   <input type="number" value={form.price || ''} onChange={e => set('price', e.target.value)} placeholder="0" className={inputCls} />
                 </Field>
                 <Field label="할인율 (%)">
-                  <input type="number" value={form.discountRate || ''} onChange={e => set('discountRate', e.target.value)} placeholder="0" min="0" max="100" className={inputCls} />
+                  <input type="number" value={form.discountRate || ''} onChange={e => set('discountRate', e.target.value)} placeholder="0" className={inputCls} />
                 </Field>
                 <Field label="재고 수량">
                   <input type="number" value={form.stock || ''} onChange={e => set('stock', e.target.value)} placeholder="0" className={inputCls} />
@@ -259,6 +274,11 @@ export default function ProductsPage() {
                   </select>
                 </Field>
               </div>
+              <Field label="크리에이터 해시태그">
+                <input value={form.hashtagInput || ''} onChange={e => set('hashtagInput', e.target.value)}
+                  placeholder="#크리에이터명 #태그 (스페이스로 구분)" className={inputCls} />
+                <p className="text-[11px] text-slate-400 mt-1"># 포함하여 입력, 스페이스로 구분</p>
+              </Field>
             </div>
             <div className="flex justify-end gap-2 px-7 py-5 border-t border-slate-100">
               <button onClick={() => setModalOpen(false)} className="px-4 py-2 text-sm font-semibold text-indigo-500 border border-indigo-300 rounded-lg hover:bg-indigo-50">취소</button>
@@ -270,8 +290,6 @@ export default function ProductsPage() {
     </div>
   );
 }
-
-const inputCls = "w-full px-3 py-2 text-sm border border-slate-200 rounded-lg outline-none focus:border-indigo-400 bg-white transition-colors";
 
 function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
   return (
