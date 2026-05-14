@@ -324,13 +324,11 @@ async function downloadCreatorSettlement(
     [null, '㈜ 두호코퍼레이션', issuedDate],
     [null, '내용', `${creatorName}X${brandName} 마켓 정산서`],
     [null, '판매기간', period],
-    [null],
     [null, '총 매출 (VAT 포함)', calc.totalSale],
     [null, '판매 수수료 (마진)', calc.margin],
     [null, '부가세 제외 마진', calc.marginExclVat],
     [null, `${creatorName} 지급 금액 (${crRatio})`, calc.crPaidBefore],
     [null, '사업소득 제외 금액', calc.crPaid],
-    [null],
     [null, '비고사항', `각 판매가에서 공급가액을 제외한 금액을 마진으로 산정한다.\n해당 마진에서 부가가치세를 제외한 금액을 기준으로 정산하며, 계약 비율(DH ${dhRatio} : 크리에이터 ${crRatio})에 따라 분배한다.\n해당 금액은 3.3%를 공제한 금액으로 지급한다.`],
   ];
 
