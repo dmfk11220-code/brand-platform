@@ -1236,7 +1236,17 @@ export default function ProductsPage() {
                 <div className="flex gap-2">
                   {SALE_TYPES.map(t => (
                     <button key={t} type="button"
-                      onClick={() => setForm(prev => ({ ...prev, saleType: t, contract: t === '마켓(공구)' ? 'RS' : undefined }))}
+                      onClick={() => setForm(prev => ({
+                        ...prev,
+                        saleType: t,
+                        // 상시판매로 변경 시에만 공구 관련 필드 초기화
+                        ...(t === '상시판매' && {
+                          contract: undefined, channel: undefined,
+                          rsRate: undefined, mgAmount: undefined,
+                          supplyPrice: undefined, shippingFee: undefined,
+                          freeShippingThreshold: undefined, freeShippingBearer: undefined,
+                        }),
+                      }))}
                       className={`flex-1 py-2.5 rounded-xl text-sm font-bold border-2 transition-all ${form.saleType === t ? (t === '마켓(공구)' ? 'border-violet-500 bg-violet-50 text-violet-700' : 'border-sky-400 bg-sky-50 text-sky-700') : 'border-slate-200 text-slate-400 hover:border-slate-300'}`}>
                       {t === '마켓(공구)' ? '🛒 마켓(공구)' : '🏪 상시판매'}
                     </button>
