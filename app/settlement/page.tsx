@@ -47,17 +47,27 @@ const TAX_TYPE_INFO: Record<TaxType, { label: string; color: string; process: st
 };
 
 const mockSettlements: Settlement[] = [
-  { id: 'S001', creator: '박서연', handle: '@seo_beauty', month: '2025-04', sales: 4320000, commission: 12, amount: 3801600, status: '정산완료', paidAt: '2025-05-10', taxType: '일반과세', docs: { bankbook: true, idCard: false, bizReg: true, stamp: true } },
-  { id: 'S002', creator: '김민지', handle: '@minji_fit', month: '2025-04', sales: 2850000, commission: 12, amount: 2508000, status: '정산완료', paidAt: '2025-05-10', taxType: '프리랜서', docs: { bankbook: true, idCard: true, bizReg: false, stamp: false } },
-  { id: 'S003', creator: '최아름', handle: '@arum_style', month: '2025-04', sales: 1920000, commission: 15, amount: 1632000, status: '정산대기', paidAt: '-', taxType: '간이과세', docs: { bankbook: true, idCard: false, bizReg: true, stamp: false } },
-  { id: 'S004', creator: '이지호', handle: '@jiho_eats', month: '2025-04', sales: 980000, commission: 15, amount: 833000, status: '서류미비', paidAt: '-', taxType: '프리랜서', docs: { bankbook: false, idCard: false, bizReg: false, stamp: false } },
-  { id: 'S005', creator: '정현우', handle: '@hyunwoo_fit', month: '2025-04', sales: 760000, commission: 12, amount: 668800, status: '정산완료', paidAt: '2025-05-10', taxType: '일반과세', docs: { bankbook: true, idCard: false, bizReg: true, stamp: true } },
-  { id: 'S006', creator: '한도윤', handle: '@doyoon_life', month: '2025-04', sales: 430000, commission: 15, amount: 365500, status: '서류미비', paidAt: '-', taxType: '간이과세', docs: { bankbook: false, idCard: false, bizReg: false, stamp: false } },
-  { id: 'S007', creator: '박서연', handle: '@seo_beauty', month: '2025-03', sales: 3980000, commission: 12, amount: 3502400, status: '정산완료', paidAt: '2025-04-10', taxType: '일반과세', docs: { bankbook: true, idCard: false, bizReg: true, stamp: true } },
-  { id: 'S008', creator: '김민지', handle: '@minji_fit', month: '2025-03', sales: 2610000, commission: 12, amount: 2296800, status: '정산완료', paidAt: '2025-04-10', taxType: '프리랜서', docs: { bankbook: true, idCard: true, bizReg: false, stamp: false } },
+  // 2025-04
+  { id: 'S001', creator: '레미니씬', handle: '@reminiscene_', month: '2025-04', sales: 8200000, commission: 12, amount: 7216000, status: '정산완료', paidAt: '2025-05-10', taxType: '일반과세', docs: { bankbook: true, idCard: false, bizReg: true, stamp: true } },
+  { id: 'S002', creator: '애정', handle: '@ae_jeong_', month: '2025-04', sales: 5640000, commission: 12, amount: 4963200, status: '정산완료', paidAt: '2025-05-10', taxType: '일반과세', docs: { bankbook: true, idCard: false, bizReg: true, stamp: true } },
+  { id: 'S003', creator: '김체리', handle: '@kimcherry_tt', month: '2025-04', sales: 3850000, commission: 12, amount: 3388000, status: '정산완료', paidAt: '2025-05-10', taxType: '프리랜서', docs: { bankbook: true, idCard: true, bizReg: false, stamp: false } },
+  { id: 'S004', creator: '진경', handle: '@jinkyoung_ig', month: '2025-04', sales: 3120000, commission: 12, amount: 2745600, status: '정산대기', paidAt: '-', taxType: '일반과세', docs: { bankbook: true, idCard: false, bizReg: true, stamp: false } },
+  { id: 'S005', creator: '이펠(최명)', handle: '@eiffel_choi', month: '2025-04', sales: 1680000, commission: 15, amount: 1428000, status: '정산대기', paidAt: '-', taxType: '프리랜서', docs: { bankbook: true, idCard: false, bizReg: false, stamp: false } },
+  { id: 'S006', creator: '뭉순임당', handle: '@moongsunimdang', month: '2025-04', sales: 1420000, commission: 12, amount: 1249600, status: '정산완료', paidAt: '2025-05-10', taxType: '일반과세', docs: { bankbook: true, idCard: false, bizReg: true, stamp: true } },
+  { id: 'S007', creator: '류스펜나', handle: '@ryuspenna', month: '2025-04', sales: 1240000, commission: 15, amount: 1054000, status: '서류미비', paidAt: '-', taxType: '프리랜서', docs: { bankbook: false, idCard: false, bizReg: false, stamp: false } },
+  { id: 'S008', creator: '인아짱', handle: '@inahjjang', month: '2025-04', sales: 980000, commission: 15, amount: 833000, status: '서류미비', paidAt: '-', taxType: '프리랜서', docs: { bankbook: false, idCard: false, bizReg: false, stamp: false } },
+  // 2025-03
+  { id: 'S009', creator: '레미니씬', handle: '@reminiscene_', month: '2025-03', sales: 7650000, commission: 12, amount: 6732000, status: '정산완료', paidAt: '2025-04-10', taxType: '일반과세', docs: { bankbook: true, idCard: false, bizReg: true, stamp: true } },
+  { id: 'S010', creator: '애정', handle: '@ae_jeong_', month: '2025-03', sales: 5120000, commission: 12, amount: 4505600, status: '정산완료', paidAt: '2025-04-10', taxType: '일반과세', docs: { bankbook: true, idCard: false, bizReg: true, stamp: true } },
+  { id: 'S011', creator: '김체리', handle: '@kimcherry_tt', month: '2025-03', sales: 3400000, commission: 12, amount: 2992000, status: '정산완료', paidAt: '2025-04-10', taxType: '프리랜서', docs: { bankbook: true, idCard: true, bizReg: false, stamp: false } },
+  { id: 'S012', creator: '진경', handle: '@jinkyoung_ig', month: '2025-03', sales: 2880000, commission: 12, amount: 2534400, status: '정산완료', paidAt: '2025-04-10', taxType: '일반과세', docs: { bankbook: true, idCard: false, bizReg: true, stamp: true } },
+  // 2025-02
+  { id: 'S013', creator: '레미니씬', handle: '@reminiscene_', month: '2025-02', sales: 6900000, commission: 12, amount: 6072000, status: '정산완료', paidAt: '2025-03-10', taxType: '일반과세', docs: { bankbook: true, idCard: false, bizReg: true, stamp: true } },
+  { id: 'S014', creator: '애정', handle: '@ae_jeong_', month: '2025-02', sales: 4780000, commission: 12, amount: 4206400, status: '정산완료', paidAt: '2025-03-10', taxType: '일반과세', docs: { bankbook: true, idCard: false, bizReg: true, stamp: true } },
+  { id: 'S015', creator: '뭉순임당', handle: '@moongsunimdang', month: '2025-02', sales: 1580000, commission: 12, amount: 1390400, status: '정산완료', paidAt: '2025-03-10', taxType: '일반과세', docs: { bankbook: true, idCard: false, bizReg: true, stamp: true } },
 ];
 
-const months = ['2025-04', '2025-03', '2025-02'];
+const months = ['2025-04', '2025-03', '2025-02'] as const;
 
 const STATUS_STYLE: Record<SettlementStatus, string> = {
   '정산완료': 'bg-emerald-500/15 text-emerald-400',
