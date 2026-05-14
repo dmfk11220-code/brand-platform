@@ -1,11 +1,13 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Plus, Search, Pencil, Trash2 } from 'lucide-react';
+import { Plus, Search, Pencil, Trash2, ExternalLink } from 'lucide-react';
 
 type Platform = '인스타그램' | '유튜브' | '틱톡' | '블로그';
 type CreatorStatus = '활성' | '비활성' | '검토중';
-type CreatorCategory = '패션' | '뷰티' | '식품' | '생활' | '스포츠' | '기타';
+type CreatorCategory = '패션' | '뷰티' | '식품' | '생활' | '스포츠' | '먹방' | '댄스' | '일상' | '음악' | '기타';
+type TaxType = '프리랜서' | '일반과세' | '간이과세';
+type ContractType = '전속' | '일부 전속';
 
 interface Creator {
   id: string;
@@ -14,24 +16,42 @@ interface Creator {
   platform: Platform;
   category: CreatorCategory;
   followers: number;
+  followersDisplay: string;
   commissionRate: number;
   phone: string;
   hashtags: string[];
   status: CreatorStatus;
   joinedAt: string;
+  taxType: TaxType;
+  contract: ContractType;
+  igUrl?: string;
+  ttUrl?: string;
+  ytUrl?: string;
 }
 
 const mockCreators: Creator[] = [
-  { id: '1', name: '김민지', handle: '@minji_fit', platform: '인스타그램', category: '스포츠', followers: 182000, commissionRate: 12, phone: '010-1111-2222', hashtags: ['#레깅스', '#홈트', '#운동복'], status: '활성', joinedAt: '2024-01-10' },
-  { id: '2', name: '박서연', handle: '@seo_beauty', platform: '유튜브', category: '뷰티', followers: 543000, commissionRate: 15, phone: '010-2222-3333', hashtags: ['#뷰티', '#메이크업', '#스킨케어'], status: '활성', joinedAt: '2024-02-05' },
-  { id: '3', name: '이지호', handle: '@jiho_eats', platform: '틱톡', category: '식품', followers: 97000, commissionRate: 10, phone: '010-3333-4444', hashtags: ['#먹방', '#맛집', '#요리'], status: '활성', joinedAt: '2024-02-20' },
-  { id: '4', name: '최아름', handle: '@arum_style', platform: '인스타그램', category: '패션', followers: 231000, commissionRate: 13, phone: '010-4444-5555', hashtags: ['#오오티디', '#패션', '#코디'], status: '검토중', joinedAt: '2024-03-15' },
-  { id: '5', name: '한도윤', handle: '@doyoon_life', platform: '블로그', category: '생활', followers: 45000, commissionRate: 8, phone: '010-5555-6666', hashtags: ['#인테리어', '#생활용품', '#살림'], status: '비활성', joinedAt: '2024-04-01' },
+  { id: '41', name: '레미니씬', handle: '@reminiscene', platform: '인스타그램', category: '패션', followers: 7777000, followersDisplay: 'IG 778만 · TT 41.7만', commissionRate: 12, phone: '', hashtags: ['#패션', '#뷰티', '#필터'], status: '활성', joinedAt: '2024-01-01', taxType: '일반과세', contract: '전속', igUrl: 'https://www.instagram.com/reminiscene' },
+  { id: '97', name: '애정', handle: '@aejung', platform: '유튜브', category: '먹방', followers: 3480000, followersDisplay: 'YT 348만 · TT 270만 · IG 35만', commissionRate: 12, phone: '', hashtags: ['#먹방', '#푸드'], status: '활성', joinedAt: '2024-01-01', taxType: '일반과세', contract: '전속' },
+  { id: '18', name: '김체리', handle: '@kimcherry', platform: '틱톡', category: '댄스', followers: 2000000, followersDisplay: 'TT 200만 · YT 12.1만 · IG 16.1만', commissionRate: 8, phone: '', hashtags: ['#댄스', '#챌린지'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
+  { id: '20', name: '진경', handle: '@jinkyung', platform: '인스타그램', category: '일상', followers: 1583000, followersDisplay: 'IG 158만 · YT 44.7만', commissionRate: 12, phone: '', hashtags: ['#일상', '#라이프'], status: '활성', joinedAt: '2024-01-01', taxType: '일반과세', contract: '전속' },
+  { id: '35', name: '이펠(최명)', handle: '@ifel', platform: '틱톡', category: '음악', followers: 843600, followersDisplay: 'TT 84.4만 · IG 31.4만', commissionRate: 8, phone: '', hashtags: ['#음악', '#커버'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
+  { id: '2', name: '류스펜나', handle: '@cornu_ryu', platform: '유튜브', category: '일상', followers: 688000, followersDisplay: 'YT 68.8만 · TT 19.4만 · IG 20.9만', commissionRate: 8, phone: '', hashtags: ['#일상', '#뷰티', '#여행'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속', ttUrl: 'https://www.tiktok.com/@cornu_ryu', igUrl: 'https://www.instagram.com/cornu_ryu/' },
+  { id: '6', name: '켈리', handle: '@kelly', platform: '틱톡', category: '댄스', followers: 605000, followersDisplay: 'TT 60.5만 · YT 35.8만', commissionRate: 8, phone: '', hashtags: ['#댄스', '#챌린지'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
+  { id: '66', name: '송수이', handle: '@songsui', platform: '틱톡', category: '패션', followers: 685000, followersDisplay: 'TT 68.5만 · IG 28.5만', commissionRate: 8, phone: '', hashtags: ['#일상', '#뷰티', '#패션'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
+  { id: '1', name: '뭉순임당', handle: '@ahnhaeyo', platform: '유튜브', category: '먹방', followers: 698000, followersDisplay: 'YT 69.8만 · TT 15.3만 · IG 11.3만', commissionRate: 12, phone: '', hashtags: ['#일상', '#먹방', '#뷰티'], status: '활성', joinedAt: '2024-01-01', taxType: '일반과세', contract: '일부 전속', ttUrl: 'https://www.tiktok.com/@ahnhaeyo', igUrl: 'https://www.instagram.com/ahnhaeyo/' },
+  { id: '126', name: '인아짱', handle: '@inajjang', platform: '유튜브', category: '먹방', followers: 749000, followersDisplay: 'YT 74.9만 · IG 14.7만', commissionRate: 8, phone: '', hashtags: ['#먹방'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
+  { id: '88', name: '제롬', handle: '@jerome', platform: '유튜브', category: '일상', followers: 465000, followersDisplay: 'YT 46.5만 · IG 27.2만', commissionRate: 12, phone: '', hashtags: ['#일상', '#뷰티', '#패션'], status: '활성', joinedAt: '2024-01-01', taxType: '일반과세', contract: '전속' },
+  { id: '51', name: '츄베릅', handle: '@chuverb', platform: '유튜브', category: '먹방', followers: 376000, followersDisplay: 'YT 37.6만 · TT 17.4만 · IG 15.9만', commissionRate: 8, phone: '', hashtags: ['#먹방'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
+  { id: '10', name: '그대들의 센세', handle: '@sense', platform: '유튜브', category: '일상', followers: 407800, followersDisplay: 'TT 40.8만 · YT 19.7만 · IG 7.8만', commissionRate: 8, phone: '', hashtags: ['#일상', '#외국어'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
+  { id: '3', name: '융나', handle: '@yoong_na_99', platform: '유튜브', category: '일상', followers: 634000, followersDisplay: 'YT 63.4만 · IG 3.6만', commissionRate: 8, phone: '', hashtags: ['#일상'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속', igUrl: 'https://www.instagram.com/yoong_na_99/' },
+  { id: '67', name: '황소영', handle: '@hwangsoyoung', platform: '틱톡', category: '패션', followers: 510600, followersDisplay: 'TT 51.1만 · IG 16.2만', commissionRate: 8, phone: '', hashtags: ['#일상', '#패션'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
 ];
 
 const PLATFORMS: Platform[] = ['인스타그램', '유튜브', '틱톡', '블로그'];
-const CATEGORIES: CreatorCategory[] = ['패션', '뷰티', '식품', '생활', '스포츠', '기타'];
+const CATEGORIES: CreatorCategory[] = ['패션', '뷰티', '식품', '생활', '스포츠', '먹방', '댄스', '일상', '음악', '기타'];
 const STATUSES: CreatorStatus[] = ['활성', '비활성', '검토중'];
+const TAX_TYPES: TaxType[] = ['프리랜서', '일반과세', '간이과세'];
+const CONTRACTS: ContractType[] = ['전속', '일부 전속'];
 
 const PLATFORM_STYLE: Record<Platform, string> = {
   '인스타그램': 'bg-pink-50 text-pink-500',
@@ -50,7 +70,11 @@ const STATUS_STYLE: Record<CreatorStatus, string> = {
   '검토중': 'bg-amber-50 text-amber-600',
 };
 
-const fmtFollower = (n: number) => n >= 10000 ? `${(n / 10000).toFixed(1)}만` : `${n.toLocaleString()}`;
+const TAX_STYLE: Record<TaxType, string> = {
+  '프리랜서': 'bg-blue-50 text-blue-500',
+  '일반과세': 'bg-violet-50 text-violet-500',
+  '간이과세': 'bg-orange-50 text-orange-500',
+};
 
 const inputCls = "w-full px-3 py-2 text-sm border border-slate-200 rounded-lg outline-none focus:border-indigo-400 bg-white";
 
@@ -59,6 +83,7 @@ export default function CreatorsPage() {
   const [query, setQuery] = useState('');
   const [platformFilter, setPlatformFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [taxFilter, setTaxFilter] = useState('');
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [modalOpen, setModalOpen] = useState(false);
   const [editCreator, setEditCreator] = useState<Creator | null>(null);
@@ -67,31 +92,26 @@ export default function CreatorsPage() {
   const filtered = useMemo(() => creators.filter(c =>
     (c.name.includes(query) || c.handle.includes(query)) &&
     (!platformFilter || c.platform === platformFilter) &&
-    (!statusFilter || c.status === statusFilter)
-  ), [creators, query, platformFilter, statusFilter]);
+    (!statusFilter || c.status === statusFilter) &&
+    (!taxFilter || c.taxType === taxFilter)
+  ), [creators, query, platformFilter, statusFilter, taxFilter]);
 
   const allChecked = filtered.length > 0 && filtered.every(c => selected.has(c.id));
   const toggleAll = () => {
-    if (allChecked) {
-      setSelected(prev => { const s = new Set(prev); filtered.forEach(c => s.delete(c.id)); return s; });
-    } else {
-      setSelected(prev => { const s = new Set(prev); filtered.forEach(c => s.add(c.id)); return s; });
-    }
+    if (allChecked) setSelected(prev => { const s = new Set(prev); filtered.forEach(c => s.delete(c.id)); return s; });
+    else setSelected(prev => { const s = new Set(prev); filtered.forEach(c => s.add(c.id)); return s; });
   };
-  const toggleOne = (id: string) => {
-    setSelected(prev => { const s = new Set(prev); s.has(id) ? s.delete(id) : s.add(id); return s; });
-  };
+  const toggleOne = (id: string) => setSelected(prev => { const s = new Set(prev); s.has(id) ? s.delete(id) : s.add(id); return s; });
 
   const handleBulkDelete = () => {
-    if (!selected.size) return;
-    if (!confirm(`선택한 ${selected.size}명을 삭제하시겠습니까?`)) return;
+    if (!selected.size || !confirm(`선택한 ${selected.size}명을 삭제하시겠습니까?`)) return;
     setCreators(prev => prev.filter(c => !selected.has(c.id)));
     setSelected(new Set());
   };
 
   const openAdd = () => {
     setEditCreator(null);
-    setForm({ platform: '인스타그램', category: '패션', status: '활성', commissionRate: 10, hashtags: [], hashtagInput: '' });
+    setForm({ platform: '인스타그램', category: '일상', status: '활성', taxType: '프리랜서', contract: '전속', commissionRate: 8, hashtags: [], hashtagInput: '' });
     setModalOpen(true);
   };
 
@@ -108,16 +128,16 @@ export default function CreatorsPage() {
       setCreators(prev => prev.map(c => c.id === editCreator.id ? { ...c, ...form, hashtags } as Creator : c));
     } else {
       setCreators(prev => [{
-        id: String(Date.now()),
-        name: form.name!,
-        handle: form.handle || '',
+        id: String(Date.now()), name: form.name!, handle: form.handle || '',
         platform: form.platform as Platform || '인스타그램',
-        category: form.category as CreatorCategory || '패션',
+        category: form.category as CreatorCategory || '일상',
         followers: Number(form.followers) || 0,
-        commissionRate: Number(form.commissionRate) || 10,
-        phone: form.phone || '',
-        hashtags,
+        followersDisplay: String(form.followers || 0),
+        commissionRate: Number(form.commissionRate) || 8,
+        phone: form.phone || '', hashtags,
         status: form.status as CreatorStatus || '활성',
+        taxType: form.taxType as TaxType || '프리랜서',
+        contract: form.contract as ContractType || '전속',
         joinedAt: new Date().toISOString().slice(0, 10),
       }, ...prev]);
     }
@@ -126,7 +146,7 @@ export default function CreatorsPage() {
 
   const handleDelete = (id: string) => {
     const c = creators.find(x => x.id === id);
-    if (!c || !confirm(`"${c.name}" 크리에이터를 삭제하시겠습니까?`)) return;
+    if (!c || !confirm(`"${c.name}"을 삭제하시겠습니까?`)) return;
     setCreators(prev => prev.filter(x => x.id !== id));
     setSelected(prev => { const s = new Set(prev); s.delete(id); return s; });
   };
@@ -138,7 +158,7 @@ export default function CreatorsPage() {
       <div className="flex items-start justify-between mb-7">
         <div>
           <h1 className="text-[22px] font-bold">크리에이터 관리</h1>
-          <p className="text-sm text-slate-400 mt-1">파트너 크리에이터를 조회하고 관리합니다.</p>
+          <p className="text-sm text-slate-400 mt-1">두호 소속 크리에이터 {creators.length}명</p>
         </div>
         <button onClick={openAdd} className="flex items-center gap-2 px-4 py-2.5 bg-indigo-500 text-white text-sm font-semibold rounded-xl hover:bg-indigo-600 transition-colors">
           <Plus size={16} /> 크리에이터 추가
@@ -146,12 +166,13 @@ export default function CreatorsPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-4 gap-4 mb-7">
+      <div className="grid grid-cols-5 gap-4 mb-7">
         {[
-          { label: '전체 크리에이터', value: creators.length, unit: '명' },
+          { label: '전체', value: creators.length, unit: '명' },
           { label: '활성', value: creators.filter(c => c.status === '활성').length, unit: '명' },
-          { label: '검토중', value: creators.filter(c => c.status === '검토중').length, unit: '명' },
-          { label: '총 팔로워', value: fmtFollower(creators.reduce((s, c) => s + c.followers, 0)), unit: '' },
+          { label: '전속', value: creators.filter(c => c.contract === '전속').length, unit: '명' },
+          { label: '사업자', value: creators.filter(c => c.taxType !== '프리랜서').length, unit: '명' },
+          { label: '프리랜서', value: creators.filter(c => c.taxType === '프리랜서').length, unit: '명' },
         ].map(s => (
           <div key={s.label} className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
             <p className="text-xs text-slate-400 font-semibold mb-2">{s.label}</p>
@@ -161,16 +182,21 @@ export default function CreatorsPage() {
       </div>
 
       {/* Toolbar */}
-      <div className="flex gap-2.5 mb-4 items-center">
+      <div className="flex gap-2.5 mb-4 items-center flex-wrap">
         <div className="relative flex-1 max-w-xs">
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-          <input value={query} onChange={e => setQuery(e.target.value)} placeholder="이름 또는 핸들 검색..."
+          <input value={query} onChange={e => setQuery(e.target.value)} placeholder="이름 검색..."
             className="w-full pl-9 pr-3 py-2 text-sm border border-slate-200 rounded-lg bg-white outline-none focus:border-indigo-400" />
         </div>
         <select value={platformFilter} onChange={e => setPlatformFilter(e.target.value)}
           className="px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white outline-none">
           <option value="">전체 플랫폼</option>
           {PLATFORMS.map(p => <option key={p}>{p}</option>)}
+        </select>
+        <select value={taxFilter} onChange={e => setTaxFilter(e.target.value)}
+          className="px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white outline-none">
+          <option value="">전체 유형</option>
+          {TAX_TYPES.map(t => <option key={t}>{t}</option>)}
         </select>
         <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
           className="px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white outline-none">
@@ -192,27 +218,33 @@ export default function CreatorsPage() {
           <thead>
             <tr className="bg-slate-50 border-b border-slate-100">
               <th className="px-4 py-3 w-10">
-                <input type="checkbox" checked={allChecked} onChange={toggleAll}
-                  className="rounded border-slate-300 accent-indigo-500" />
+                <input type="checkbox" checked={allChecked} onChange={toggleAll} className="rounded border-slate-300 accent-indigo-500" />
               </th>
-              {['크리에이터', '플랫폼', '카테고리', '팔로워', '수수료율', '연락처', '해시태그', '상태', '관리'].map(h => (
+              {['크리에이터', '플랫폼', '카테고리', '팔로워', '정산유형', '수수료율', '계약', '해시태그', '상태', '관리'].map(h => (
                 <th key={h} className="px-4 py-3 text-left text-[11px] font-bold text-slate-400 uppercase tracking-wide whitespace-nowrap">{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {filtered.length === 0 ? (
-              <tr><td colSpan={10} className="py-16 text-center text-slate-400 text-sm">검색 결과가 없습니다.</td></tr>
+              <tr><td colSpan={11} className="py-16 text-center text-slate-400 text-sm">검색 결과가 없습니다.</td></tr>
             ) : filtered.map(c => (
               <tr key={c.id} className={`border-b border-slate-50 last:border-0 hover:bg-slate-50/60 transition-colors ${selected.has(c.id) ? 'bg-indigo-50/40' : ''}`}>
                 <td className="px-4 py-3.5">
-                  <input type="checkbox" checked={selected.has(c.id)} onChange={() => toggleOne(c.id)}
-                    className="rounded border-slate-300 accent-indigo-500" />
+                  <input type="checkbox" checked={selected.has(c.id)} onChange={() => toggleOne(c.id)} className="rounded border-slate-300 accent-indigo-500" />
                 </td>
                 <td className="px-4 py-3.5">
-                  <div>
-                    <p className="font-semibold text-sm">{c.name}</p>
-                    <p className="text-xs text-slate-400">{c.handle}</p>
+                  <div className="flex items-center gap-2">
+                    <div>
+                      <p className="font-semibold text-sm">{c.name}</p>
+                      <p className="text-xs text-slate-400">{c.handle}</p>
+                    </div>
+                    {(c.igUrl || c.ttUrl || c.ytUrl) && (
+                      <a href={c.igUrl || c.ttUrl || c.ytUrl} target="_blank" rel="noopener"
+                        className="text-slate-300 hover:text-indigo-400 transition-colors">
+                        <ExternalLink size={12} />
+                      </a>
+                    )}
                   </div>
                 </td>
                 <td className="px-4 py-3.5">
@@ -223,9 +255,16 @@ export default function CreatorsPage() {
                 <td className="px-4 py-3.5">
                   <span className="text-xs font-semibold px-2 py-1 rounded-full bg-pink-50 text-pink-500 whitespace-nowrap">{c.category}</span>
                 </td>
-                <td className="px-4 py-3.5 text-sm font-semibold">{fmtFollower(c.followers)}</td>
+                <td className="px-4 py-3.5">
+                  <p className="text-sm font-semibold text-slate-700">{c.followersDisplay}</p>
+                </td>
+                <td className="px-4 py-3.5">
+                  <span className={`text-xs font-semibold px-2 py-1 rounded-full whitespace-nowrap ${TAX_STYLE[c.taxType]}`}>{c.taxType}</span>
+                </td>
                 <td className="px-4 py-3.5 text-sm font-bold">{c.commissionRate}%</td>
-                <td className="px-4 py-3.5 text-sm text-slate-500">{c.phone}</td>
+                <td className="px-4 py-3.5">
+                  <span className={`text-xs font-semibold px-2 py-1 rounded-full whitespace-nowrap ${c.contract === '전속' ? 'bg-indigo-50 text-indigo-500' : 'bg-slate-100 text-slate-500'}`}>{c.contract}</span>
+                </td>
                 <td className="px-4 py-3.5">
                   <div className="flex flex-wrap gap-1">
                     {c.hashtags.map(h => (
@@ -255,7 +294,7 @@ export default function CreatorsPage() {
       {/* Modal */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={e => e.target === e.currentTarget && setModalOpen(false)}>
-          <div className="bg-white rounded-2xl w-[520px] max-h-[90vh] overflow-y-auto shadow-2xl">
+          <div className="bg-white rounded-2xl w-[560px] max-h-[90vh] overflow-y-auto shadow-2xl">
             <div className="flex items-center justify-between px-7 pt-6 pb-1">
               <h2 className="text-[17px] font-bold">{editCreator ? '크리에이터 수정' : '크리에이터 추가'}</h2>
               <button onClick={() => setModalOpen(false)} className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 text-lg">✕</button>
@@ -263,9 +302,9 @@ export default function CreatorsPage() {
             <div className="px-7 py-5 flex flex-col gap-3">
               <div className="grid grid-cols-2 gap-3">
                 <Field label="이름" required>
-                  <input value={form.name || ''} onChange={e => set('name', e.target.value)} placeholder="실명" className={inputCls} />
+                  <input value={form.name || ''} onChange={e => set('name', e.target.value)} placeholder="크리에이터명" className={inputCls} />
                 </Field>
-                <Field label="핸들 (계정명)">
+                <Field label="핸들">
                   <input value={form.handle || ''} onChange={e => set('handle', e.target.value)} placeholder="@handle" className={inputCls} />
                 </Field>
                 <Field label="플랫폼">
@@ -278,11 +317,21 @@ export default function CreatorsPage() {
                     {CATEGORIES.map(c => <option key={c}>{c}</option>)}
                   </select>
                 </Field>
+                <Field label="정산 유형">
+                  <select value={form.taxType || '프리랜서'} onChange={e => set('taxType', e.target.value)} className={inputCls}>
+                    {TAX_TYPES.map(t => <option key={t}>{t}</option>)}
+                  </select>
+                </Field>
+                <Field label="계약 형태">
+                  <select value={form.contract || '전속'} onChange={e => set('contract', e.target.value)} className={inputCls}>
+                    {CONTRACTS.map(c => <option key={c}>{c}</option>)}
+                  </select>
+                </Field>
                 <Field label="팔로워 수">
                   <input type="number" value={form.followers || ''} onChange={e => set('followers', e.target.value)} placeholder="0" className={inputCls} />
                 </Field>
                 <Field label="수수료율 (%)">
-                  <input type="number" value={form.commissionRate || ''} onChange={e => set('commissionRate', e.target.value)} placeholder="10" className={inputCls} />
+                  <input type="number" value={form.commissionRate || ''} onChange={e => set('commissionRate', e.target.value)} placeholder="8" className={inputCls} />
                 </Field>
                 <Field label="연락처">
                   <input value={form.phone || ''} onChange={e => set('phone', e.target.value)} placeholder="010-0000-0000" className={inputCls} />
@@ -295,8 +344,7 @@ export default function CreatorsPage() {
               </div>
               <Field label="해시태그">
                 <input value={form.hashtagInput || ''} onChange={e => set('hashtagInput', e.target.value)}
-                  placeholder="#레깅스 #홈트 #운동복 (스페이스로 구분)" className={inputCls} />
-                <p className="text-[11px] text-slate-400 mt-1"># 포함하여 입력, 스페이스로 구분</p>
+                  placeholder="#패션 #뷰티 (스페이스로 구분)" className={inputCls} />
               </Field>
             </div>
             <div className="flex justify-end gap-2 px-7 py-5 border-t border-slate-100">
