@@ -1032,39 +1032,34 @@ export default function ProductsPage() {
   const handleSave = () => {
     if (!form.name?.trim() || !form.brand?.trim()) return alert('상품명과 브랜드를 입력해주세요.');
     if (editProduct) {
-      setProducts(prev => prev.map(p => p.id === editProduct.id ? {
-        ...p, ...form,
-        price: Number(form.price) || p.price,
-        discountRate: Number(form.discountRate ?? p.discountRate),
-        stock: Number(form.stock ?? p.stock),
-        dhRatio: form.dhRatio ? Number(form.dhRatio) : p.dhRatio,
-        crRatio: form.crRatio ? Number(form.crRatio) : p.crRatio,
-        rsRate: form.rsRate ? Number(form.rsRate) : p.rsRate,
-        mgAmount: form.mgAmount ? Number(form.mgAmount) : p.mgAmount,
-        supplyPrice: form.supplyPrice ? Number(form.supplyPrice) : p.supplyPrice,
-        shippingFee: form.shippingFee ? Number(form.shippingFee) : p.shippingFee,
-        freeShippingThreshold: form.freeShippingThreshold != null ? Number(form.freeShippingThreshold) : p.freeShippingThreshold,
-      } as Product : p));
+      // sf()가 이미 number로 변환하므로 단순 merge
+      setProducts(prev => prev.map(p =>
+        p.id === editProduct.id ? { ...p, ...form } as Product : p
+      ));
     } else {
       setProducts(prev => [{
-        id: String(Date.now()), name: form.name!, brand: form.brand!,
-        category: form.category as ProductCategory || '기타',
-        price: Number(form.price) || 0, discountRate: Number(form.discountRate) || 0,
-        stock: Number(form.stock) || 0, status: form.status as ProductStatus || '진행예정',
+        id: String(Date.now()),
+        name: form.name!, brand: form.brand!,
+        category: (form.category as ProductCategory) || '기타',
+        price: (form.price as number) || 0,
+        discountRate: (form.discountRate as number) || 0,
+        stock: (form.stock as number) || 0,
+        status: (form.status as ProductStatus) || '진행예정',
         sales: 0, creator: form.creator || '', thumbnail: '📦',
         createdAt: new Date().toISOString().slice(0, 10),
-        saleType: form.saleType as SaleType || '마켓(공구)',
-        contract: form.contract as ContractType || undefined,
-        channel: form.channel as SalesChannel || undefined,
-        rsRate: form.rsRate ? Number(form.rsRate) : undefined,
-        dhRatio: form.dhRatio ? Number(form.dhRatio) : undefined,
-        crRatio: form.crRatio ? Number(form.crRatio) : undefined,
-        mgAmount: form.mgAmount ? Number(form.mgAmount) : undefined,
-        supplyPrice: form.supplyPrice ? Number(form.supplyPrice) : undefined,
-        shippingFee: form.shippingFee ? Number(form.shippingFee) : undefined,
-        freeShippingThreshold: form.freeShippingThreshold ? Number(form.freeShippingThreshold) : undefined,
-        freeShippingBearer: form.freeShippingBearer ?? undefined,
-        marketStart: form.marketStart, marketEnd: form.marketEnd,
+        saleType: (form.saleType as SaleType) || '마켓(공구)',
+        contract: form.contract as ContractType,
+        channel: form.channel as SalesChannel,
+        rsRate: form.rsRate as number | undefined,
+        dhRatio: form.dhRatio as number | undefined,
+        crRatio: form.crRatio as number | undefined,
+        mgAmount: form.mgAmount as number | undefined,
+        supplyPrice: form.supplyPrice as number | undefined,
+        shippingFee: form.shippingFee as number | undefined,
+        freeShippingThreshold: form.freeShippingThreshold as number | undefined,
+        freeShippingBearer: form.freeShippingBearer,
+        marketStart: form.marketStart,
+        marketEnd: form.marketEnd,
       }, ...prev]);
     }
     setModalOpen(false);
@@ -1078,7 +1073,11 @@ export default function ProductsPage() {
     setSettlementTarget(null);
   };
 
-  const sf = (key: string, val: string | number) => setForm(prev => ({ ...prev, [key]: val }));
+  const NUM_KEYS = new Set(['price','discountRate','stock','dhRatio','crRatio','rsRate','mgAmount','supplyPrice','shippingFee','freeShippingThreshold']);
+  const sf = (key: string, val: string | number) => {
+    const parsed = NUM_KEYS.has(key) ? (val === '' ? undefined : Number(val)) : val;
+    setForm(prev => ({ ...prev, [key]: parsed }));
+  };
   const isMarket = form.saleType === '마켓(공구)';
   const isPurchase = form.contract === '매입';
   const hasMG = form.contract === 'MG' || form.contract === 'RS+MG';
