@@ -35,19 +35,19 @@ interface Settlement {
 const TAX_TYPE_INFO: Record<TaxType, { label: string; color: string; process: string; docs: string[] }> = {
   '프리랜서': {
     label: '프리랜서',
-    color: 'bg-blue-500/15 text-blue-400',
+    color: 'bg-blue-50 text-blue-600',
     process: '공액 지급',
     docs: ['통장사본', '주민등록증 사본'],
   },
   '일반과세': {
     label: '일반과세',
-    color: 'bg-violet-500/15 text-violet-400',
+    color: 'bg-violet-50 text-violet-600',
     process: '세금계산서 발급',
     docs: ['사업자등록증', '통장사본', '도장'],
   },
   '간이과세': {
     label: '간이과세',
-    color: 'bg-orange-500/15 text-orange-400',
+    color: 'bg-orange-50 text-orange-500',
     process: '세금계산서 발행',
     docs: ['사업자등록증', '통장사본'],
   },
@@ -210,9 +210,9 @@ const mockSettlements: Settlement[] = [
 const months = ['2025-04', '2025-03', '2025-02'] as const;
 
 const STATUS_STYLE: Record<SettlementStatus, string> = {
-  '정산완료': 'bg-emerald-500/15 text-emerald-400',
-  '정산대기': 'bg-amber-500/15 text-amber-400',
-  '서류미비': 'bg-rose-500/15 text-rose-400',
+  '정산완료': 'bg-emerald-50 text-emerald-600',
+  '정산대기': 'bg-amber-50 text-amber-600',
+  '서류미비': 'bg-rose-50 text-rose-500',
 };
 
 type DocKey = 'bankbook' | 'idCard' | 'bizReg' | 'stamp';
@@ -267,15 +267,15 @@ function DocModal({ docLabel, imageUrl, onClose, onUpload }: DocModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm" onClick={onClose}>
-      <div className="bg-[#1a1d27] rounded-2xl border border-white/10 w-[480px] max-h-[80vh] overflow-hidden shadow-2xl"
+      <div className="bg-white rounded-2xl border border-slate-200 w-[480px] max-h-[80vh] overflow-hidden shadow-2xl"
         onClick={e => e.stopPropagation()}>
         {/* 모달 헤더 */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-white/5">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
           <div className="flex items-center gap-2">
             <FileText size={15} className="text-indigo-400" />
-            <span className="text-white font-semibold text-sm">{docLabel}</span>
+            <span className="text-slate-900 font-semibold text-sm">{docLabel}</span>
           </div>
-          <button onClick={onClose} className="text-slate-500 hover:text-white transition-colors">
+          <button onClick={onClose} className="text-slate-400 hover:text-slate-700 transition-colors">
             <X size={16} />
           </button>
         </div>
@@ -284,7 +284,7 @@ function DocModal({ docLabel, imageUrl, onClose, onUpload }: DocModalProps) {
           {imageUrl ? (
             /* 이미지 미리보기 */
             <div className="flex flex-col gap-4">
-              <div className="rounded-xl overflow-hidden bg-black/30 border border-white/5 flex items-center justify-center min-h-[260px]">
+              <div className="rounded-xl overflow-hidden bg-slate-50 border border-slate-100 flex items-center justify-center min-h-[260px]">
                 {imageUrl.startsWith('data:application/pdf') ? (
                   <div className="flex flex-col items-center gap-3 py-12 text-slate-400">
                     <FileText size={48} className="text-slate-600" />
@@ -296,7 +296,7 @@ function DocModal({ docLabel, imageUrl, onClose, onUpload }: DocModalProps) {
               </div>
               <button
                 onClick={() => inputRef.current?.click()}
-                className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg border border-white/10 text-slate-400 hover:text-white hover:border-white/20 text-sm transition-colors">
+                className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg border border-slate-200 text-slate-500 hover:text-slate-800 hover:border-slate-300 text-sm transition-colors">
                 <Upload size={14} /> 파일 교체
               </button>
             </div>
@@ -308,13 +308,13 @@ function DocModal({ docLabel, imageUrl, onClose, onUpload }: DocModalProps) {
               onDrop={handleDrop}
               onClick={() => inputRef.current?.click()}
               className={`flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed cursor-pointer transition-colors min-h-[220px] ${
-                dragging ? 'border-indigo-500 bg-indigo-500/10' : 'border-white/10 hover:border-white/20 bg-white/[0.02] hover:bg-white/[0.04]'
+                dragging ? 'border-indigo-500 bg-indigo-50' : 'border-slate-200 hover:border-slate-300 bg-slate-50 hover:bg-slate-100/60'
               }`}>
               <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center">
                 <ImageIcon size={22} className="text-slate-500" />
               </div>
               <div className="text-center">
-                <p className="text-white text-sm font-medium mb-1">이미지 또는 PDF 업로드</p>
+                <p className="text-slate-900 text-sm font-medium mb-1">이미지 또는 PDF 업로드</p>
                 <p className="text-slate-500 text-xs">클릭하거나 파일을 드래그하세요</p>
               </div>
               <p className="text-slate-600 text-[11px]">JPG, PNG, PDF 지원</p>
@@ -349,7 +349,7 @@ function SalesBreakdownBar({ items, total }: { items: SalesItem[]; total: number
           <div key={item.category} className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
             <span className="text-slate-400 text-[11px]">{item.category}</span>
-            <span className="text-white text-[11px] font-medium">₩{item.amount.toLocaleString()}</span>
+            <span className="text-slate-800 text-[11px] font-medium">₩{item.amount.toLocaleString()}</span>
             <span className="text-slate-600 text-[10px]">({Math.round((item.amount / total) * 100)}%)</span>
           </div>
         ))}
@@ -381,7 +381,7 @@ export default function SettlementPage() {
   const modalKey = docModal ? `${docModal.settlementId}-${docModal.docKey}` : '';
 
   return (
-    <div className="p-8 min-h-screen bg-[#0f1117]">
+    <div className="p-8">
       {/* 문서 이미지 모달 */}
       {docModal && (
         <DocModal
@@ -397,7 +397,7 @@ export default function SettlementPage() {
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-white mb-1">정산 관리</h1>
+          <h1 className="text-2xl font-bold text-slate-900 mb-1">정산 관리</h1>
           <p className="text-slate-400 text-sm">크리에이터 유형별 정산 프리셋 적용</p>
         </div>
         <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg transition-colors">
@@ -406,7 +406,7 @@ export default function SettlementPage() {
       </div>
 
       {/* 탭 */}
-      <div className="flex gap-1 mb-6 bg-[#13151f] rounded-lg p-1 w-fit">
+      <div className="flex gap-1 mb-6 bg-slate-100 rounded-lg p-1 w-fit">
         {[['list', '정산 내역'], ['guide', '유형별 안내']].map(([key, label]) => (
           <button key={key} onClick={() => setTab(key as 'list' | 'guide')}
             className={`px-5 py-2 rounded-md text-sm font-medium transition-colors ${tab === key ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'}`}>
@@ -419,12 +419,12 @@ export default function SettlementPage() {
         /* ── 유형별 안내 탭 ── */
         <div className="grid grid-cols-3 gap-4">
           {(Object.entries(TAX_TYPE_INFO) as [TaxType, typeof TAX_TYPE_INFO[TaxType]][]).map(([type, info]) => (
-            <div key={type} className="bg-[#1a1d27] rounded-xl border border-white/5 p-6">
+            <div key={type} className="bg-white rounded-xl border border-slate-100 shadow-sm p-6">
               <div className="flex items-center gap-2 mb-4">
                 <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${info.color}`}>{info.label}</span>
               </div>
               <p className="text-[11px] text-slate-500 font-semibold mb-1 uppercase tracking-wider">정산 절차</p>
-              <p className="text-white font-semibold text-sm mb-5">
+              <p className="text-slate-900 font-semibold text-sm mb-5">
                 ① 사업자시트 작성 → ② {info.process}
               </p>
               <p className="text-[11px] text-slate-500 font-semibold mb-2 uppercase tracking-wider">필요 서류</p>
@@ -444,24 +444,24 @@ export default function SettlementPage() {
         <>
           {/* 요약 카드 */}
           <div className="grid grid-cols-4 gap-4 mb-6">
-            <div className="bg-[#1a1d27] rounded-xl p-5 border border-white/5">
+            <div className="bg-white rounded-xl p-5 border border-slate-100 shadow-sm">
               <p className="text-slate-400 text-xs mb-2 font-medium">총 매출</p>
-              <p className="text-2xl font-bold text-white">₩{totalSales.toLocaleString()}</p>
+              <p className="text-2xl font-bold text-slate-900">₩{totalSales.toLocaleString()}</p>
               <div className="flex items-center gap-1 mt-2 text-emerald-400 text-xs">
                 <TrendingUp size={12} /> 전월 대비 +8.2%
               </div>
             </div>
-            <div className="bg-[#1a1d27] rounded-xl p-5 border border-white/5">
+            <div className="bg-white rounded-xl p-5 border border-slate-100 shadow-sm">
               <p className="text-slate-400 text-xs mb-2 font-medium">정산 예정액</p>
-              <p className="text-2xl font-bold text-white">₩{totalAmount.toLocaleString()}</p>
+              <p className="text-2xl font-bold text-slate-900">₩{totalAmount.toLocaleString()}</p>
               <p className="text-slate-500 text-xs mt-2">수수료 차감 후</p>
             </div>
-            <div className="bg-[#1a1d27] rounded-xl p-5 border border-white/5">
+            <div className="bg-white rounded-xl p-5 border border-slate-100 shadow-sm">
               <p className="text-slate-400 text-xs mb-2 font-medium">정산 대기</p>
               <p className="text-2xl font-bold text-amber-400">{pendingCount}건</p>
               <p className="text-slate-500 text-xs mt-2">서류 완료, 지급 전</p>
             </div>
-            <div className="bg-[#1a1d27] rounded-xl p-5 border border-white/5">
+            <div className="bg-white rounded-xl p-5 border border-slate-100 shadow-sm">
               <p className="text-slate-400 text-xs mb-2 font-medium">서류 미비</p>
               <p className="text-2xl font-bold text-rose-400">{missingDocsCount}건</p>
               <p className="text-slate-500 text-xs mt-2">서류 수집 필요</p>
@@ -474,7 +474,7 @@ export default function SettlementPage() {
               {months.map(m => (
                 <button key={m} onClick={() => setSelectedMonth(m)}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    selectedMonth === m ? 'bg-indigo-600 text-white' : 'bg-[#1a1d27] text-slate-400 hover:text-white border border-white/5'
+                    selectedMonth === m ? 'bg-indigo-600 text-white' : 'bg-white text-slate-500 hover:text-slate-900 border border-slate-200'
                   }`}>
                   {m}
                 </button>
@@ -484,21 +484,21 @@ export default function SettlementPage() {
               <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
               <input value={search} onChange={e => setSearch(e.target.value)}
                 placeholder="크리에이터 검색"
-                className="pl-9 pr-4 py-2 bg-[#1a1d27] border border-white/5 rounded-lg text-sm text-white placeholder:text-slate-500 outline-none focus:border-indigo-500 w-52" />
+                className="pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-indigo-400 w-52" />
             </div>
           </div>
 
           {/* 테이블 */}
-          <div className="bg-[#1a1d27] rounded-xl border border-white/5 overflow-hidden">
+          <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-white/5">
+                <tr className="border-b border-slate-100">
                   {['크리에이터', '유형', '절차', '서류 현황', '매출액', '수수료율', '정산액', '상태', '지급일', ''].map(h => (
-                    <th key={h} className="text-left px-4 py-3.5 text-xs font-semibold text-slate-400 whitespace-nowrap">{h}</th>
+                    <th key={h} className="text-left px-4 py-3.5 text-xs font-semibold text-slate-500 whitespace-nowrap">{h}</th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/[0.04]">
+              <tbody className="divide-y divide-slate-50">
                 {filtered.map(s => {
                   const info = TAX_TYPE_INFO[s.taxType];
                   const requiredDocs = getRequiredDocs(s.taxType, s.docs);
@@ -507,9 +507,9 @@ export default function SettlementPage() {
 
                   return (
                     <>
-                      <tr key={s.id} className="hover:bg-white/[0.02] transition-colors">
+                      <tr key={s.id} className="hover:bg-slate-50/60 transition-colors">
                         <td className="px-4 py-3.5">
-                          <p className="text-white font-medium">{s.creator}</p>
+                          <p className="text-slate-800 font-medium">{s.creator}</p>
                           <p className="text-slate-500 text-xs">{s.handle}</p>
                         </td>
                         <td className="px-4 py-3.5">
@@ -522,7 +522,7 @@ export default function SettlementPage() {
                             : <span className="flex items-center gap-1 text-xs text-rose-400"><AlertCircle size={12} /> 미비</span>
                           }
                         </td>
-                        <td className="px-4 py-3.5 text-white font-medium">₩{s.sales.toLocaleString()}</td>
+                        <td className="px-4 py-3.5 text-slate-800 font-medium">₩{s.sales.toLocaleString()}</td>
                         <td className="px-4 py-3.5 text-slate-300">{s.commission}%</td>
                         <td className="px-4 py-3.5 text-emerald-400 font-bold">₩{s.amount.toLocaleString()}</td>
                         <td className="px-4 py-3.5">
@@ -531,7 +531,7 @@ export default function SettlementPage() {
                         <td className="px-4 py-3.5 text-slate-400 text-xs">{s.paidAt}</td>
                         <td className="px-4 py-3.5">
                           <button onClick={() => setExpandedRow(isExpanded ? null : s.id)}
-                            className="text-slate-500 hover:text-white transition-colors">
+                            className="text-slate-400 hover:text-slate-700 transition-colors">
                             {isExpanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
                           </button>
                         </td>
@@ -539,7 +539,7 @@ export default function SettlementPage() {
 
                       {/* 확장 영역 */}
                       {isExpanded && (
-                        <tr key={`${s.id}-detail`} className="bg-white/[0.015]">
+                        <tr key={`${s.id}-detail`} className="bg-slate-50/70">
                           <td colSpan={10} className="px-6 py-5">
                             <div className="flex gap-8">
                               {/* 서류 체크리스트 */}
@@ -578,7 +578,7 @@ export default function SettlementPage() {
                               </div>
 
                               {/* 구분선 */}
-                              <div className="w-px bg-white/5 self-stretch" />
+                              <div className="w-px bg-slate-100 self-stretch" />
 
                               {/* 매출 내역 */}
                               <div className="flex-1">

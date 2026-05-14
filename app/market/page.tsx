@@ -77,16 +77,16 @@ const MANAGER_STYLE: Record<string, string> = {
 };
 
 const CONTRACT_STYLE: Record<ContractType, string> = {
-  'RS':     'bg-indigo-500/15 text-indigo-400',
-  'RS+MG':  'bg-violet-500/15 text-violet-400',
-  'MG':     'bg-amber-500/15 text-amber-400',
+  'RS':     'bg-indigo-50 text-indigo-600',
+  'RS+MG':  'bg-violet-50 text-violet-600',
+  'MG':     'bg-amber-50 text-amber-600',
 };
 
 const STATUS_STYLE: Record<DealStatus, string> = {
-  '진행 완료': 'bg-emerald-500/15 text-emerald-400',
-  '진행 중':   'bg-blue-500/15 text-blue-400',
+  '진행 완료': 'bg-emerald-50 text-emerald-600',
+  '진행 중':   'bg-blue-50 text-blue-600',
   '작업 중':   'bg-sky-500/15 text-sky-400',
-  '상품 세팅': 'bg-amber-500/15 text-amber-400',
+  '상품 세팅': 'bg-amber-50 text-amber-600',
   '컨택 중':   'bg-slate-500/15 text-slate-400',
 };
 
@@ -142,15 +142,15 @@ export default function MarketPage() {
   const dhMargin = totalRevenue > 0 ? ((totalDhProfit / totalRevenue) * 100).toFixed(1) : '-';
 
   return (
-    <div className="p-8 min-h-screen bg-[#0f1117]">
+    <div className="p-8">
       {/* 헤더 */}
       <div className="mb-7">
-        <h1 className="text-2xl font-bold text-white mb-1">마켓 손익 관리</h1>
+        <h1 className="text-2xl font-bold text-slate-900 mb-1">마켓 손익 관리</h1>
         <p className="text-slate-400 text-sm">공구·상시 딜별 거래액 → 브랜드 정산 → 크리에이터 지급 → DH 순이익 분석</p>
       </div>
 
       {/* 월 탭 */}
-      <div className="flex gap-1 mb-6 bg-[#13151f] rounded-lg p-1 w-fit">
+      <div className="flex gap-1 mb-6 bg-slate-100 rounded-lg p-1 w-fit">
         {MONTHS.map(m => (
           <button key={m.key} onClick={() => setMonth(m.key)}
             className={`px-5 py-2 rounded-md text-sm font-medium transition-colors ${month === m.key ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'}`}>
@@ -161,18 +161,18 @@ export default function MarketPage() {
 
       {/* 요약 카드 */}
       <div className="grid grid-cols-4 gap-4 mb-6">
-        <div className="bg-[#1a1d27] rounded-xl border border-white/5 p-5">
-          <p className="text-xs text-slate-400 font-medium mb-2">집계된 거래액</p>
-          <p className="text-2xl font-bold text-white">₩{fmt(totalRevenue)}</p>
+        <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-5">
+          <p className="text-xs text-slate-500 font-medium mb-2">집계된 거래액</p>
+          <p className="text-2xl font-bold text-slate-900">₩{fmt(totalRevenue)}</p>
           <p className="text-[11px] text-slate-600 mt-1">매출 미집계 딜 제외</p>
         </div>
-        <div className="bg-[#1a1d27] rounded-xl border border-white/5 p-5">
-          <p className="text-xs text-slate-400 font-medium mb-2">크리에이터 지급</p>
+        <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-5">
+          <p className="text-xs text-slate-500 font-medium mb-2">크리에이터 지급</p>
           <p className="text-2xl font-bold text-blue-400">₩{fmt(totalCrPaid)}</p>
           <p className="text-[11px] text-slate-600 mt-1">RS 분배 + MG 합산</p>
         </div>
-        <div className="bg-[#1a1d27] rounded-xl border border-white/5 p-5">
-          <p className="text-xs text-slate-400 font-medium mb-2">DH 순이익</p>
+        <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-5">
+          <p className="text-xs text-slate-500 font-medium mb-2">DH 순이익</p>
           <p className="text-2xl font-bold text-indigo-400">₩{fmt(totalDhProfit)}</p>
           {totalRevenue > 0 && (
             <div className="flex items-center gap-1 mt-1 text-emerald-400 text-[11px]">
@@ -180,22 +180,22 @@ export default function MarketPage() {
             </div>
           )}
         </div>
-        <div className="bg-[#1a1d27] rounded-xl border border-white/5 p-5">
-          <p className="text-xs text-slate-400 font-medium mb-2">딜 현황</p>
-          <p className="text-2xl font-bold text-white">{filtered.length}<span className="text-sm font-normal text-slate-400 ml-1">건</span></p>
+        <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-5">
+          <p className="text-xs text-slate-500 font-medium mb-2">딜 현황</p>
+          <p className="text-2xl font-bold text-slate-900">{filtered.length}<span className="text-sm font-normal text-slate-400 ml-1">건</span></p>
           <p className="text-[11px] text-slate-600 mt-1">완료 {completedCount}건 · 진행 {filtered.length - completedCount}건</p>
         </div>
       </div>
 
       {/* 손익 구조 바 (매출 있는 딜 기준) */}
       {totalRevenue > 0 && (
-        <div className="bg-[#1a1d27] rounded-xl border border-white/5 p-5 mb-5">
-          <p className="text-xs font-semibold text-slate-400 mb-3 uppercase tracking-wider">손익 구조 (집계된 거래액 기준)</p>
+        <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-5 mb-5">
+          <p className="text-xs font-semibold text-slate-500 mb-3 uppercase tracking-wider">손익 구조 (집계된 거래액 기준)</p>
           <ProfitBar revenue={totalRevenue} crPaid={totalCrPaid} dhProfit={totalDhProfit} />
           <div className="flex gap-6 mt-4 text-sm">
             <div>
               <p className="text-slate-500 text-[11px] mb-0.5">브랜드 정산</p>
-              <p className="text-white font-bold">₩{fmt(totalRevenue - totalCrPaid - totalDhProfit)}</p>
+              <p className="text-slate-900 font-bold">₩{fmt(totalRevenue - totalCrPaid - totalDhProfit)}</p>
             </div>
             <div>
               <p className="text-slate-500 text-[11px] mb-0.5">크리에이터 지급</p>
@@ -240,16 +240,16 @@ export default function MarketPage() {
       </div>
 
       {/* 테이블 */}
-      <div className="bg-[#1a1d27] rounded-xl border border-white/5 overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-white/5">
+            <tr className="border-b border-slate-100">
               {['브랜드', '크리에이터', '담당', '계약', '채널', '진행일', '거래액', 'RS율', '크리 지급', 'DH 순이익', '상태', ''].map(h => (
                 <th key={h} className="text-left px-4 py-3 text-[11px] font-semibold text-slate-400 whitespace-nowrap">{h}</th>
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/[0.04]">
+          <tbody className="divide-y divide-slate-50">
             {filtered.length === 0 ? (
               <tr><td colSpan={12} className="py-14 text-center text-slate-500 text-sm">조건에 맞는 딜이 없습니다.</td></tr>
             ) : filtered.map(d => {
@@ -262,13 +262,13 @@ export default function MarketPage() {
 
               return (
                 <>
-                  <tr key={d.id} className="hover:bg-white/[0.02] transition-colors cursor-pointer"
+                  <tr key={d.id} className="hover:bg-slate-50/60 transition-colors cursor-pointer"
                     onClick={() => setExpandedId(isExpanded ? null : d.id)}>
                     <td className="px-4 py-3.5">
-                      <p className="text-white font-semibold text-sm">{d.brand}</p>
+                      <p className="text-slate-900 font-semibold text-sm">{d.brand}</p>
                     </td>
                     <td className="px-4 py-3.5">
-                      <p className="text-slate-300 text-sm">{d.creator}</p>
+                      <p className="text-slate-600 text-sm">{d.creator}</p>
                     </td>
                     <td className="px-4 py-3.5">
                       <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-semibold ${MANAGER_STYLE[d.manager] ?? 'bg-white/5 text-slate-300'}`}>{d.manager}</span>
@@ -280,13 +280,13 @@ export default function MarketPage() {
                     <td className="px-4 py-3.5 text-slate-500 text-xs whitespace-nowrap">{d.startDate?.slice(5)}</td>
                     <td className="px-4 py-3.5">
                       {d.revenue
-                        ? <span className="text-white font-semibold text-sm">₩{fmt(d.revenue)}</span>
+                        ? <span className="text-slate-900 font-semibold text-sm">₩{fmt(d.revenue)}</span>
                         : <span className="text-slate-600 text-xs">미집계</span>
                       }
                     </td>
                     <td className="px-4 py-3.5">
                       {d.rsRate
-                        ? <span className="text-slate-300 text-sm font-medium">{Math.round(d.rsRate * 100)}%</span>
+                        ? <span className="text-slate-600 text-sm font-medium">{Math.round(d.rsRate * 100)}%</span>
                         : <span className="text-slate-600 text-xs">-</span>
                       }
                     </td>
@@ -318,11 +318,11 @@ export default function MarketPage() {
 
                           {/* RS 수수료 구조 */}
                           <div>
-                            <p className="text-[11px] text-slate-500 font-semibold uppercase tracking-wider mb-3">RS 수수료 구조</p>
+                            <p className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider mb-3">RS 수수료 구조</p>
                             <div className="flex flex-col gap-2 text-xs">
                               <div className="flex justify-between">
                                 <span className="text-slate-400">거래액 (VAT 포함)</span>
-                                <span className="text-white font-semibold">{d.revenue ? `₩${d.revenue.toLocaleString()}` : '미집계'}</span>
+                                <span className="text-slate-900 font-semibold">{d.revenue ? `₩${d.revenue.toLocaleString()}` : '미집계'}</span>
                               </div>
                               <div className="flex justify-between">
                                 <span className="text-slate-400">RS 수수료율</span>
@@ -332,7 +332,7 @@ export default function MarketPage() {
                                 <>
                                   <div className="flex justify-between border-t border-white/5 pt-2">
                                     <span className="text-slate-400">RS 수수료 (VAT 포함)</span>
-                                    <span className="text-white font-semibold">₩{rsFeeVat.toLocaleString()}</span>
+                                    <span className="text-slate-900 font-semibold">₩{rsFeeVat.toLocaleString()}</span>
                                   </div>
                                   <div className="flex justify-between">
                                     <span className="text-slate-400">RS 수수료 (VAT 제외)</span>
@@ -345,7 +345,7 @@ export default function MarketPage() {
 
                           {/* DH / 크리에이터 분배 */}
                           <div>
-                            <p className="text-[11px] text-slate-500 font-semibold uppercase tracking-wider mb-3">수익 분배 ({d.dhRatio}:{d.crRatio})</p>
+                            <p className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider mb-3">수익 분배 ({d.dhRatio}:{d.crRatio})</p>
                             <div className="flex flex-col gap-2 text-xs">
                               <div className="flex justify-between">
                                 <span className="text-slate-400">DH 분배율</span>
@@ -374,7 +374,7 @@ export default function MarketPage() {
 
                           {/* 손익 비율 바 */}
                           <div>
-                            <p className="text-[11px] text-slate-500 font-semibold uppercase tracking-wider mb-3">손익 구조</p>
+                            <p className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider mb-3">손익 구조</p>
                             {d.revenue && d.crPaid != null && d.dhProfit != null ? (
                               <ProfitBar revenue={d.revenue} crPaid={d.crPaid} dhProfit={d.dhProfit} />
                             ) : d.crPaid != null && d.dhProfit != null ? (
