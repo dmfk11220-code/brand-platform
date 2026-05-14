@@ -762,12 +762,25 @@ function SettlementUploadModal({
   };
 
   const hasRS = product.contract === 'RS' || product.contract === 'RS+MG';
+  const isMGOnly = product.contract === 'MG';
+  const hasMG = product.contract === 'MG' || product.contract === 'RS+MG';
   const confirmRevenue = picked?.value ?? Number(manualRevenue.replace(/,/g, ''));
   const calc = hasRS && confirmRevenue > 0 ? calcRS(product, confirmRevenue) : null;
 
+  // MG 고정 정산 계산
+  const mgTotal = product.mgAmount ?? 0;
+  const mgRatioTotal = (product.dhRatio ?? 3) + (product.crRatio ?? 7);
+  const mgCrBefore = Math.round(mgTotal * ((product.crRatio ?? 7) / mgRatioTotal));
+  const mgCrPaid = Math.round(mgCrBefore * 0.967);
+  const mgDhProfit = mgTotal - mgCrBefore;
+
   const handleApply = () => {
-    if (!confirmRevenue) return alert('거래액을 선택하거나 입력해주세요.');
-    onApply(confirmRevenue, calc?.crPaid ?? product.crPaid ?? 0, calc?.dhProfit ?? product.dhProfit ?? 0);
+    if (!isMGOnly && !confirmRevenue) return alert('거래액을 선택하거나 입력해주세요.');
+    onApply(
+      isMGOnly ? mgTotal : confirmRevenue,
+      isMGOnly ? mgCrPaid : (calc?.crPaid ?? product.crPaid ?? 0),
+      isMGOnly ? mgDhProfit : (calc?.dhProfit ?? product.dhProfit ?? 0),
+    );
   };
 
   const handleDownloadRSCreator = async () => {
@@ -926,13 +939,37 @@ function SettlementUploadModal({
                   </div>
                 </>
               )}
+              {/* MG 고정 정산 */}
+              {step === 'confirm' && hasMG && mgTotal > 0 && (
+                <div className="bg-amber-50/60 border border-amber-100 rounded-xl p-4 flex flex-col gap-2">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-700">MG 고정 정산</span>
+                    {product.contract === 'RS+MG' && <span className="text-[10px] text-slate-400">RS 정산과 별도 보장</span>}
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 text-xs">
+                    <div className="bg-white rounded-lg border border-amber-100 px-3 py-2">
+                      <p className="text-[10px] text-slate-400">MG 총액</p>
+                      <p className="text-[13px] font-bold text-amber-700">₩{mgTotal.toLocaleString()}</p>
+                    </div>
+                    <div className="bg-white rounded-lg border border-amber-100 px-3 py-2">
+                      <p className="text-[10px] text-slate-400">크리에이터 ({product.crRatio}/{mgRatioTotal})</p>
+                      <p className="text-[13px] font-bold text-blue-600">₩{mgCrPaid.toLocaleString()}</p>
+                      <p className="text-[9px] text-slate-400">3.3% 차감 후</p>
+                    </div>
+                    <div className="bg-white rounded-lg border border-amber-100 px-3 py-2">
+                      <p className="text-[10px] text-slate-400">DH ({product.dhRatio}/{mgRatioTotal})</p>
+                      <p className="text-[13px] font-bold text-indigo-600">₩{mgDhProfit.toLocaleString()}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
 
         <div className="flex justify-end gap-2 px-7 py-4 border-t border-slate-100">
           <button onClick={onClose} className="px-4 py-2 text-sm font-semibold text-slate-500 border border-slate-200 rounded-lg hover:bg-slate-50">취소</button>
-          {step === 'confirm' && (
+          {(step === 'confirm' || isMGOnly) && (
             <button onClick={handleApply} className="flex items-center gap-1.5 px-5 py-2 text-sm font-semibold bg-emerald-500 text-white rounded-lg hover:bg-emerald-600">
               <CheckCircle2 size={14} /> 적용하기
             </button>
@@ -986,7 +1023,7 @@ export default function ProductsPage() {
 
   const openAdd = () => {
     setEditProduct(null);
-    setForm({ saleType: '마켓(공구)', status: '진행예정', category: '뷰티', discountRate: 0, stock: 0, contract: 'RS', channel: '자사몰', dhRatio: 3, crRatio: 7 });
+    setForm({ saleType: '마켓(공구)', status: '진행예정', category: '뷰티', discountRate: 0, stock: 0, contract: '매입', channel: '자사몰', dhRatio: 3, crRatio: 7 });
     setModalOpen(true);
   };
 
@@ -1006,7 +1043,7 @@ export default function ProductsPage() {
         mgAmount: form.mgAmount ? Number(form.mgAmount) : p.mgAmount,
         supplyPrice: form.supplyPrice ? Number(form.supplyPrice) : p.supplyPrice,
         shippingFee: form.shippingFee ? Number(form.shippingFee) : p.shippingFee,
-        freeShippingThreshold: form.freeShippingThreshold ? Number(form.freeShippingThreshold) : p.freeShippingThreshold,
+        freeShippingThreshold: form.freeShippingThreshold != null ? Number(form.freeShippingThreshold) : p.freeShippingThreshold,
       } as Product : p));
     } else {
       setProducts(prev => [{
@@ -1129,7 +1166,7 @@ export default function ProductsPage() {
             {filtered.length === 0 ? (
               <tr><td colSpan={14} className="py-16 text-center text-slate-400 text-sm">검색 결과가 없습니다.</td></tr>
             ) : filtered.map(p => {
-              const isOwnPlatform = p.channel === '자사몰';
+              const isOwnPlatform = p.contract === '매입';
               const needsSettlement = p.saleType === '마켓(공구)' && !p.revenue;
               return (
                 <tr key={p.id} className={`border-b border-slate-50 last:border-0 hover:bg-slate-50/60 transition-colors ${selected.has(p.id) ? 'bg-indigo-50/40' : ''}`}>
@@ -1228,7 +1265,18 @@ export default function ProductsPage() {
                     <p className="text-[12.5px] font-semibold text-slate-600 mb-1.5">계약 형태</p>
                     <div className="flex gap-2 flex-wrap">
                       {CONTRACT_TYPES.map(c => (
-                        <button key={c} type="button" onClick={() => sf('contract', c)}
+                        <button key={c} type="button" onClick={() => setForm(prev => ({
+                          ...prev,
+                          contract: c,
+                          // 매입 → 자사몰, RS/MG 계열 → 현재 채널이 자사몰이면 브랜드몰로
+                          channel: c === '매입' ? '자사몰' : (prev.channel === '자사몰' ? '브랜드몰' : prev.channel),
+                          // 매입에서 벗어나면 배송비 관련 초기화
+                          ...(c !== '매입' && { supplyPrice: undefined, shippingFee: undefined, freeShippingThreshold: undefined, freeShippingBearer: undefined }),
+                          // RS 계열 아닌 경우 rsRate 초기화
+                          ...(!['RS', 'RS+MG'].includes(c) && { rsRate: undefined }),
+                          // MG 계열 아닌 경우 mgAmount 초기화
+                          ...(!['MG', 'RS+MG'].includes(c) && { mgAmount: undefined }),
+                        }))}
                           className={`flex-1 py-2 rounded-lg text-xs font-bold border transition-all min-w-[60px] ${form.contract === c ? 'border-violet-500 bg-violet-100 text-violet-700' : 'border-slate-200 bg-white text-slate-400 hover:border-slate-300'}`}>
                           {c}
                         </button>
@@ -1294,7 +1342,7 @@ export default function ProductsPage() {
 
       {/* 정산서 모달 (채널별 분기) */}
       {settlementTarget && (
-        settlementTarget.channel === '자사몰'
+        settlementTarget.contract === '매입'
           ? <SettlementIssueModal product={settlementTarget} onClose={() => setSettlementTarget(null)} onApply={handleSettlementApply} />
           : <SettlementUploadModal product={settlementTarget} onClose={() => setSettlementTarget(null)} onApply={handleSettlementApply} />
       )}
