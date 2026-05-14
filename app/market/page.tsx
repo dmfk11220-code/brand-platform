@@ -69,6 +69,13 @@ function fmt(n: number) {
   return n.toLocaleString();
 }
 
+const MANAGER_STYLE: Record<string, string> = {
+  '이유나':  'bg-pink-500/15 text-pink-300',
+  '김봄':    'bg-emerald-500/15 text-emerald-300',
+  '배정은':  'bg-sky-500/15 text-sky-300',
+  '김하늘':  'bg-violet-500/15 text-violet-300',
+};
+
 const CONTRACT_STYLE: Record<ContractType, string> = {
   'RS':     'bg-indigo-500/15 text-indigo-400',
   'RS+MG':  'bg-violet-500/15 text-violet-400',
@@ -263,7 +270,9 @@ export default function MarketPage() {
                     <td className="px-4 py-3.5">
                       <p className="text-slate-300 text-sm">{d.creator}</p>
                     </td>
-                    <td className="px-4 py-3.5 text-slate-500 text-xs">{d.manager}</td>
+                    <td className="px-4 py-3.5">
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-semibold ${MANAGER_STYLE[d.manager] ?? 'bg-white/5 text-slate-300'}`}>{d.manager}</span>
+                    </td>
                     <td className="px-4 py-3.5">
                       <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${CONTRACT_STYLE[d.contract]}`}>{d.contract}</span>
                     </td>
