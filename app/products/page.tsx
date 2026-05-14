@@ -212,9 +212,9 @@ function calcPurchase(
   summaries: ProductSummary[], shippingFee: number,
   dhRatio: number, crRatio: number, dhExtraExpense = 0
 ) {
-  const totalSale = summaries.reduce((s, r) => s + r.totalSale, 0);
-  const totalSupply = summaries.reduce((s, r) => s + r.totalSupply, 0);
-  const brandTotal = totalSupply + shippingFee;
+  const totalSale = summaries.reduce((s, r) => s + Number(r.totalSale), 0);
+  const totalSupply = summaries.reduce((s, r) => s + Number(r.totalSupply), 0);
+  const brandTotal = totalSupply + Number(shippingFee); // Number() 강제 — string 방지
   const brandSupplyExclVat = Math.round(brandTotal / 1.1);
   const brandVat = brandTotal - brandSupplyExclVat;
 
@@ -470,7 +470,7 @@ function SettlementIssueModal({
   }];
 
   const [summaries, setSummaries] = useState<ProductSummary[]>(initSummary);
-  const [shippingPerUnit, setShippingPerUnit] = useState<number>(product.shippingFee ?? 0);
+  const [shippingPerUnit, setShippingPerUnit] = useState<number>(Number(product.shippingFee ?? 0));
   const [freeQty, setFreeQty] = useState<number>(0); // 무료배송 적용 건수 (수기)
   const [period, setPeriod] = useState(`${product.marketStart ?? ''} ~ ${product.marketEnd ?? ''}`);
   const [downloading, setDownloading] = useState<'brand' | 'creator' | null>(null);
