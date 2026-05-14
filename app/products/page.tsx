@@ -554,11 +554,13 @@ function SettlementIssueModal({
                   </div>
                   <div className="space-y-1.5 text-xs">
                     <SRow label="총 매출 (VAT 포함)" value={calc.totalSale} />
-                    <SRow label="마진 (총매출-공급가-배송비)" value={calc.margin} />
-                    <SRow label="마진 (VAT 제외)" value={calc.marginExclVat} />
-                    <div className="border-t border-indigo-200 pt-1.5">
-                      <SRow label={`크리에이터 지급 (${crRatio}/${dhRatio + crRatio})`} value={calc.crPaidBefore} />
-                      <SRow label="지급액 (3.3% 차감)" value={calc.crPaid} bold highlight />
+                    <SRow label="브랜드 지급 (공급가+배송비)" value={calc.brandTotal} muted />
+                    <SRow label="DH+크리 마진" value={calc.margin} />
+                    <SRow label="마진 VAT 제외 (÷1.1)" value={calc.marginExclVat} muted />
+                    <div className="border-t border-indigo-200 pt-1.5 space-y-1.5">
+                      <SRow label={`크리에이터 (${crRatio}/${dhRatio + crRatio})`} value={calc.crPaidBefore} />
+                      <SRow label="크리에이터 지급 (3.3% 차감)" value={calc.crPaid} bold highlight />
+                      <SRow label={`DH 순이익 (${dhRatio}/${dhRatio + crRatio})`} value={calc.dhProfit} bold dhProfit />
                     </div>
                   </div>
                   <button onClick={handleDownloadCreator} disabled={downloading === 'creator'}
@@ -586,11 +588,12 @@ function SettlementIssueModal({
   );
 }
 
-function SRow({ label, value, bold, muted, highlight }: { label: string; value: number; bold?: boolean; muted?: boolean; highlight?: boolean }) {
+function SRow({ label, value, bold, muted, highlight, dhProfit }: { label: string; value: number; bold?: boolean; muted?: boolean; highlight?: boolean; dhProfit?: boolean }) {
+  const color = dhProfit ? 'text-teal-600' : highlight ? 'text-indigo-600' : muted ? 'text-slate-400' : 'text-slate-700';
   return (
     <div className="flex justify-between items-center">
       <span className={muted ? 'text-slate-400' : 'text-slate-600'}>{label}</span>
-      <span className={`font-${bold ? 'bold' : 'semibold'} ${highlight ? 'text-indigo-600' : muted ? 'text-slate-400' : 'text-slate-700'}`}>
+      <span className={`${bold ? 'font-bold' : 'font-semibold'} ${color}`}>
         ₩{value.toLocaleString()}
       </span>
     </div>
