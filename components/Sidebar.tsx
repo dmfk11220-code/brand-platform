@@ -9,6 +9,7 @@ import {
   Users,
   BarChart3,
   PieChart,
+  ShoppingCart,
   Settings,
 } from 'lucide-react';
 
@@ -19,6 +20,7 @@ const navItems = [
   { href: '/creators', label: '크리에이터', icon: Users },
   { href: '/settlement', label: '정산', icon: BarChart3 },
   { href: '/sales', label: '매출 카테고리', icon: PieChart },
+  { href: '/market', label: '마켓 손익', icon: ShoppingCart },
   { href: '/settings', label: '설정', icon: Settings },
 ];
 
