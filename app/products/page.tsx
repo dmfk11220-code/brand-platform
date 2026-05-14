@@ -34,8 +34,10 @@ interface Product {
   dhRatio?: number;
   crRatio?: number;
   mgAmount?: number;
-  supplyPrice?: number;   // 매입 계약 시 공급가 (단가)
-  shippingFee?: number;   // 배송비 합계 (자사몰)
+  supplyPrice?: number;           // 매입 계약 시 공급가 (단가)
+  shippingFee?: number;           // 건당 배송비 (자사몰)
+  freeShippingThreshold?: number; // 무료배송 기준금액 (0 = 없음)
+  freeShippingBearer?: 'brand' | 'dh'; // 무료배송 부담 주체
   marketStart?: string;
   marketEnd?: string;
   revenue?: number;
@@ -206,7 +208,10 @@ function calcRS(p: Product, revenue: number) {
 }
 
 // ── 매입 정산 계산 ────────────────────────────────────
-function calcPurchase(summaries: ProductSummary[], shippingFee: number, dhRatio: number, crRatio: number) {
+function calcPurchase(
+  summaries: ProductSummary[], shippingFee: number,
+  dhRatio: number, crRatio: number, dhExtraExpense = 0
+) {
   const totalSale = summaries.reduce((s, r) => s + r.totalSale, 0);
   const totalSupply = summaries.reduce((s, r) => s + r.totalSupply, 0);
   const brandTotal = totalSupply + shippingFee;
@@ -218,9 +223,10 @@ function calcPurchase(summaries: ProductSummary[], shippingFee: number, dhRatio:
   const total = dhRatio + crRatio;
   const crPaidBefore = Math.round(marginExclVat * (crRatio / total));
   const crPaid = Math.round(crPaidBefore * 0.967); // 3.3% 차감
-  const dhProfit = marginExclVat - crPaidBefore;
+  // 두호 부담 무료배송 시 DH 순이익에서 차감
+  const dhProfit = marginExclVat - crPaidBefore - dhExtraExpense;
 
-  return { totalSale, totalSupply, brandTotal, brandSupplyExclVat, brandVat, margin, marginExclVat, crPaidBefore, crPaid, dhProfit };
+  return { totalSale, totalSupply, brandTotal, brandSupplyExclVat, brandVat, margin, marginExclVat, crPaidBefore, crPaid, dhProfit, dhExtraExpense };
 }
 
 // ── Excel 파싱 (자사몰 주문 RAW DATA) ─────────────────
@@ -465,9 +471,13 @@ function SettlementIssueModal({
 
   const [summaries, setSummaries] = useState<ProductSummary[]>(initSummary);
   const [shippingPerUnit, setShippingPerUnit] = useState<number>(product.shippingFee ?? 0);
-  const [freeShippingThreshold, setFreeShippingThreshold] = useState<number>(0); // 0 = 없음
+  const [freeQty, setFreeQty] = useState<number>(0); // 무료배송 적용 건수 (수기)
   const [period, setPeriod] = useState(`${product.marketStart ?? ''} ~ ${product.marketEnd ?? ''}`);
   const [downloading, setDownloading] = useState<'brand' | 'creator' | null>(null);
+
+  // 상품에 등록된 무료배송 정책
+  const freeShippingThreshold = product.freeShippingThreshold ?? 0;
+  const freeShippingBearer = product.freeShippingBearer; // 'brand' | 'dh' | undefined
 
   // 수량·공급가 직접 수정 가능
   const updateSummary = (idx: number, key: keyof ProductSummary, val: number) => {
@@ -481,14 +491,18 @@ function SettlementIssueModal({
     }));
   };
 
-  // 배송비 자동 계산: 무료배송 기준 적용
   const totalQty = summaries.reduce((s, r) => s + r.qty, 0);
-  const effectiveShipping = summaries.reduce((total, s) => {
-    const isFree = freeShippingThreshold > 0 && s.salePrice >= freeShippingThreshold;
-    return total + (isFree ? 0 : shippingPerUnit * s.qty);
-  }, 0);
+  const totalShipping = shippingPerUnit * totalQty;
+  const freeShippingAmount = shippingPerUnit * freeQty; // 무료배송 적용 금액
 
-  const calc = calcPurchase(summaries, effectiveShipping, dhRatio, crRatio);
+  // 브랜드 부담: 브랜드에 지급하는 배송비에서 차감
+  // 두호 부담: 브랜드에는 전액 지급, DH 순이익에서 차감
+  const effectiveShipping = freeShippingBearer === 'brand'
+    ? totalShipping - freeShippingAmount
+    : totalShipping;
+  const dhExtraExpense = freeShippingBearer === 'dh' ? freeShippingAmount : 0;
+
+  const calc = calcPurchase(summaries, effectiveShipping, dhRatio, crRatio, dhExtraExpense);
 
   const handleDownloadBrand = async () => {
     setDownloading('brand');
@@ -539,32 +553,61 @@ function SettlementIssueModal({
               {/* 배송비 계산 */}
               <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 flex flex-col gap-3">
                 <p className="text-[12.5px] font-semibold text-slate-700">배송비</p>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
+
+                {/* 건당 배송비 + 자동 합계 */}
+                <div className="flex items-center gap-3">
+                  <div className="flex-1">
                     <p className="text-[11px] text-slate-500 mb-1">건당 배송비 (원)</p>
-                    <input type="number" value={shippingPerUnit} onChange={e => setShippingPerUnit(Number(e.target.value))} className={inputCls} placeholder="예: 3000" />
+                    <input type="number" value={shippingPerUnit}
+                      onChange={e => setShippingPerUnit(Number(e.target.value))}
+                      className={inputCls} placeholder="예: 3000" />
                   </div>
-                  <div>
-                    <p className="text-[11px] text-slate-500 mb-1">무료배송 기준금액 (0 = 없음)</p>
-                    <input type="number" value={freeShippingThreshold} onChange={e => setFreeShippingThreshold(Number(e.target.value))} className={inputCls} placeholder="예: 100000" />
+                  <div className="text-slate-300 text-lg mt-4">×</div>
+                  <div className="w-20 text-center mt-4">
+                    <p className="text-[11px] text-slate-400">{totalQty}건</p>
+                  </div>
+                  <div className="text-slate-300 text-lg mt-4">=</div>
+                  <div className="text-right mt-4">
+                    <p className="text-[11px] text-slate-400 mb-0.5">배송비 합계</p>
+                    <p className="text-[14px] font-bold text-slate-700">₩{totalShipping.toLocaleString()}</p>
                   </div>
                 </div>
-                {/* 계산 결과 미리보기 */}
+
+                {/* 무료배송 정책 (상품에 설정된 경우) */}
+                {freeShippingThreshold > 0 && freeShippingBearer && (
+                  <div className={`rounded-lg border px-3 py-2.5 flex flex-col gap-2 ${freeShippingBearer === 'brand' ? 'bg-teal-50/60 border-teal-100' : 'bg-amber-50/60 border-amber-100'}`}>
+                    <div className="flex items-center gap-1.5">
+                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${freeShippingBearer === 'brand' ? 'bg-teal-100 text-teal-700' : 'bg-amber-100 text-amber-700'}`}>
+                        {freeShippingBearer === 'brand' ? '브랜드 부담' : 'DH 부담'}
+                      </span>
+                      <span className="text-[11px] text-slate-500">
+                        ₩{freeShippingThreshold.toLocaleString()} 이상 결제 시 무료배송
+                      </span>
+                      <span className="text-[10px] text-slate-400 ml-auto">현재 수기 입력 모드</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <p className="text-[11px] text-slate-500 whitespace-nowrap">무료배송 적용 건수</p>
+                      <input type="number" value={freeQty} min={0} max={totalQty}
+                        onChange={e => setFreeQty(Math.min(Number(e.target.value), totalQty))}
+                        className="w-20 text-right px-2 py-1 text-sm border border-slate-200 rounded bg-white outline-none focus:border-teal-400" />
+                      <span className="text-[11px] text-slate-400">건 (/{totalQty}건)</span>
+                      <span className={`ml-auto text-[12px] font-bold ${freeShippingBearer === 'brand' ? 'text-teal-600' : 'text-amber-600'}`}>
+                        −₩{freeShippingAmount.toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {/* 최종 배송비 합계 */}
                 <div className="flex items-center justify-between pt-1 border-t border-slate-200">
-                  <div className="text-[11px] text-slate-400">
-                    {freeShippingThreshold > 0
-                      ? <>건당 ₩{shippingPerUnit.toLocaleString()} × {totalQty}건
-                          {' '}
-                          <span className="text-teal-500">
-                            ({summaries.filter(s => s.salePrice >= freeShippingThreshold).reduce((a, s) => a + s.qty, 0)}건 무료배송 제외)
-                          </span>
-                        </>
-                      : <>건당 ₩{shippingPerUnit.toLocaleString()} × {totalQty}건</>
-                    }
-                  </div>
-                  <div className="text-[13px] font-bold text-slate-700">
-                    합계 ₩{effectiveShipping.toLocaleString()}
-                  </div>
+                  <span className="text-[11px] text-slate-500">
+                    {freeShippingBearer === 'brand' && freeQty > 0
+                      ? `브랜드 지급 배송비 (${totalQty}건 중 ${freeQty}건 브랜드 부담 차감)`
+                      : freeShippingBearer === 'dh' && freeQty > 0
+                      ? `전체 배송비 (${freeQty}건 DH 부담 ₩${freeShippingAmount.toLocaleString()} 별도 차감)`
+                      : `건당 ₩${shippingPerUnit.toLocaleString()} × ${totalQty}건`}
+                  </span>
+                  <span className="text-[13px] font-bold text-slate-700">₩{effectiveShipping.toLocaleString()}</span>
                 </div>
               </div>
 
@@ -645,6 +688,9 @@ function SettlementIssueModal({
                     <div className="border-t border-indigo-200 pt-1.5 space-y-1.5">
                       <SRow label={`크리에이터 (${crRatio}/${dhRatio + crRatio})`} value={calc.crPaidBefore} />
                       <SRow label="크리에이터 지급 (3.3% 차감)" value={calc.crPaid} bold highlight />
+                      {dhExtraExpense > 0 && (
+                        <SRow label={`DH 무료배송 부담 (${freeQty}건)`} value={-dhExtraExpense} bold dhProfit />
+                      )}
                       <SRow label={`DH 순이익 (${dhRatio}/${dhRatio + crRatio})`} value={calc.dhProfit} bold dhProfit />
                     </div>
                   </div>
@@ -674,13 +720,12 @@ function SettlementIssueModal({
 }
 
 function SRow({ label, value, bold, muted, highlight, dhProfit }: { label: string; value: number; bold?: boolean; muted?: boolean; highlight?: boolean; dhProfit?: boolean }) {
-  const color = dhProfit ? 'text-teal-600' : highlight ? 'text-indigo-600' : muted ? 'text-slate-400' : 'text-slate-700';
+  const color = dhProfit ? (value < 0 ? 'text-amber-600' : 'text-teal-600') : highlight ? 'text-indigo-600' : muted ? 'text-slate-400' : 'text-slate-700';
+  const display = value < 0 ? `−₩${Math.abs(value).toLocaleString()}` : `₩${value.toLocaleString()}`;
   return (
     <div className="flex justify-between items-center">
       <span className={muted ? 'text-slate-400' : 'text-slate-600'}>{label}</span>
-      <span className={`${bold ? 'font-bold' : 'font-semibold'} ${color}`}>
-        ₩{value.toLocaleString()}
-      </span>
+      <span className={`${bold ? 'font-bold' : 'font-semibold'} ${color}`}>{display}</span>
     </div>
   );
 }
@@ -968,6 +1013,8 @@ export default function ProductsPage() {
         mgAmount: form.mgAmount ? Number(form.mgAmount) : undefined,
         supplyPrice: form.supplyPrice ? Number(form.supplyPrice) : undefined,
         shippingFee: form.shippingFee ? Number(form.shippingFee) : undefined,
+        freeShippingThreshold: form.freeShippingThreshold ? Number(form.freeShippingThreshold) : undefined,
+        freeShippingBearer: form.freeShippingBearer ?? undefined,
         marketStart: form.marketStart, marketEnd: form.marketEnd,
       }, ...prev]);
     }
@@ -1195,6 +1242,22 @@ export default function ProductsPage() {
                     )}
                     {isPurchase && (
                       <Field label="건당 배송비 (원)"><input type="number" value={form.shippingFee || ''} onChange={e => sf('shippingFee', e.target.value)} placeholder="예: 3000" className={inputCls} /></Field>
+                    )}
+                    {isPurchase && (
+                      <Field label="무료배송 기준 (원, 0=없음)"><input type="number" value={form.freeShippingThreshold ?? ''} onChange={e => sf('freeShippingThreshold', e.target.value)} placeholder="예: 100000" className={inputCls} /></Field>
+                    )}
+                    {isPurchase && Number(form.freeShippingThreshold) > 0 && (
+                      <Field label="무료배송 부담">
+                        <div className="flex gap-2">
+                          {(['brand', 'dh'] as const).map(v => (
+                            <button key={v} type="button"
+                              onClick={() => sf('freeShippingBearer', v)}
+                              className={`flex-1 py-2 text-xs font-bold rounded-lg border transition-colors ${form.freeShippingBearer === v ? (v === 'brand' ? 'bg-teal-500 text-white border-teal-500' : 'bg-amber-400 text-white border-amber-400') : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'}`}>
+                              {v === 'brand' ? '브랜드 부담' : 'DH 부담'}
+                            </button>
+                          ))}
+                        </div>
+                      </Field>
                     )}
                     <Field label="진행 시작일"><input value={form.marketStart || ''} onChange={e => sf('marketStart', e.target.value)} placeholder="2026.05.21" className={inputCls} /></Field>
                     <Field label="진행 종료일"><input value={form.marketEnd || ''} onChange={e => sf('marketEnd', e.target.value)} placeholder="2026.05.24" className={inputCls} /></Field>
