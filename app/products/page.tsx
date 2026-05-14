@@ -397,53 +397,53 @@ async function parseSettlementExcel(file: File): Promise<ParsedCandidate[]> {
 function SettlementIssueModal({
   product, onClose, onApply,
 }: { product: Product; onClose: () => void; onApply: (revenue: number, crPaid: number, dhProfit: number) => void }) {
-  const fileRef = useRef<HTMLInputElement>(null);
-  const [step, setStep] = useState<'upload' | 'review' | 'done'>('upload');
-  const [loading, setLoading] = useState(false);
-  const [drag, setDrag] = useState(false);
-  const [summaries, setSummaries] = useState<ProductSummary[]>([]);
+  const dhRatio = product.dhRatio ?? 3;
+  const crRatio = product.crRatio ?? 7;
+
+  // 상품 데이터에서 바로 summary 구성
+  const initSummary = (): ProductSummary[] => [{
+    name: product.name,
+    orderCount: product.sales,
+    supplyPrice: product.supplyPrice ?? 0,
+    salePrice: product.price,
+    qty: product.sales,
+    totalSale: product.price * product.sales,
+    totalSupply: (product.supplyPrice ?? 0) * product.sales,
+    totalMargin: (product.price - (product.supplyPrice ?? 0)) * product.sales,
+  }];
+
+  const [summaries, setSummaries] = useState<ProductSummary[]>(initSummary);
   const [shippingFee, setShippingFee] = useState(product.shippingFee ?? 0);
   const [period, setPeriod] = useState(`${product.marketStart ?? ''} ~ ${product.marketEnd ?? ''}`);
   const [downloading, setDownloading] = useState<'brand' | 'creator' | null>(null);
 
-  const dhRatio = product.dhRatio ?? 3;
-  const crRatio = product.crRatio ?? 7;
-  const calc = summaries.length > 0 ? calcPurchase(summaries, shippingFee, dhRatio, crRatio) : null;
-
-  const handleFile = useCallback(async (file: File) => {
-    setLoading(true);
-    try {
-      const result = await parseOrderRawData(file);
-      if (result.length === 0) return alert('주문 데이터를 인식하지 못했습니다. 컬럼명을 확인해주세요.');
-      setSummaries(result);
-      setStep('review');
-    } catch { alert('파일 파싱 중 오류가 발생했습니다.'); }
-    finally { setLoading(false); }
-  }, []);
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault(); setDrag(false);
-    const f = e.dataTransfer.files[0]; if (f) handleFile(f);
+  // 수량·공급가 직접 수정 가능
+  const updateSummary = (idx: number, key: keyof ProductSummary, val: number) => {
+    setSummaries(prev => prev.map((s, i) => {
+      if (i !== idx) return s;
+      const next = { ...s, [key]: val };
+      next.totalSale = next.salePrice * next.qty;
+      next.totalSupply = next.supplyPrice * next.qty;
+      next.totalMargin = next.totalSale - next.totalSupply;
+      return next;
+    }));
   };
 
+  const calc = calcPurchase(summaries, shippingFee, dhRatio, crRatio);
+
   const handleDownloadBrand = async () => {
-    if (!calc) return;
     setDownloading('brand');
     await downloadBrandSettlement(product.brand, product.creator, period, summaries, shippingFee, calc);
     setDownloading(null);
   };
 
   const handleDownloadCreator = async () => {
-    if (!calc) return;
     setDownloading('creator');
     await downloadCreatorSettlement(product.creator, product.brand, period, summaries, shippingFee, calc, dhRatio, crRatio);
     setDownloading(null);
   };
 
-  const handleApply = () => {
-    if (!calc) return;
-    onApply(calc.totalSale, calc.crPaid, calc.dhProfit);
-  };
+  const handleApply = () => onApply(calc.totalSale, calc.crPaid, calc.dhProfit);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
@@ -467,54 +467,9 @@ function SettlementIssueModal({
           <button onClick={onClose} className="text-slate-400 hover:text-slate-600 text-lg p-1 mt-0.5">✕</button>
         </div>
 
-        {/* Step bar */}
-        <div className="flex items-center gap-1 px-7 py-3 bg-slate-50/60 text-[11px] font-semibold text-slate-400">
-          {(['주문 데이터 업로드', '내용 확인 및 발급', '완료'] as const).map((label, i) => {
-            const si = step === 'upload' ? 0 : step === 'review' ? 1 : 2;
-            return (
-              <span key={label} className="flex items-center gap-1">
-                {i > 0 && <ChevronRight size={11} className="text-slate-300" />}
-                <span className={si > i ? 'text-emerald-500' : si === i ? 'text-teal-600' : ''}>{si > i ? '✓ ' : ''}{label}</span>
-              </span>
-            );
-          })}
-        </div>
-
         <div className="px-7 py-5">
-          {/* STEP 1: 업로드 */}
-          {step === 'upload' && (
-            <div className="flex flex-col gap-4">
-              <div
-                onDragOver={e => { e.preventDefault(); setDrag(true); }}
-                onDragLeave={() => setDrag(false)}
-                onDrop={handleDrop}
-                onClick={() => fileRef.current?.click()}
-                className={`border-2 border-dashed rounded-2xl p-10 flex flex-col items-center gap-3 transition-colors cursor-pointer
-                  ${drag ? 'border-teal-400 bg-teal-50' : 'border-slate-200 hover:border-teal-300 hover:bg-slate-50'}`}>
-                <input ref={fileRef} type="file" accept=".xlsx,.xls,.csv" className="hidden"
-                  onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); }} />
-                {loading
-                  ? <><div className="w-8 h-8 border-2 border-teal-400 border-t-transparent rounded-full animate-spin" /><p className="text-sm text-slate-400">파싱 중...</p></>
-                  : <>
-                      <div className="w-12 h-12 rounded-xl bg-teal-50 flex items-center justify-center">
-                        <Upload size={22} className="text-teal-500" />
-                      </div>
-                      <p className="text-sm font-semibold text-slate-700">자사몰 주문 데이터 (RAW DATA) 업로드</p>
-                      <p className="text-xs text-slate-400 text-center">플랫폼 주문 내보내기 파일을 드래그하거나 클릭<br/>컬럼 필요: 주문상품명 · 수량 · 판매가 · 공급가</p>
-                    </>
-                }
-              </div>
-
-              <div className="bg-slate-50 rounded-xl px-4 py-3 text-xs text-slate-500 space-y-1">
-                <p className="font-semibold text-slate-600">발급 내용</p>
-                <p>① <span className="text-teal-600 font-semibold">브랜드 지급 정산서</span> — 공급가×수량 + 배송비 → {product.brand}에 지급</p>
-                <p>② <span className="text-indigo-600 font-semibold">크리에이터 정산서</span> — (마진 ÷ 1.1) × {crRatio}/{dhRatio + crRatio} × 96.7% → {product.creator}에 지급</p>
-              </div>
-            </div>
-          )}
-
-          {/* STEP 2: 내용 확인 */}
-          {step === 'review' && calc && (
+          {/* 항상 바로 내용 확인 */}
+          {true && calc && (
             <div className="flex flex-col gap-4">
               {/* 판매 기간 + 배송비 */}
               <div className="grid grid-cols-2 gap-3">
@@ -528,16 +483,18 @@ function SettlementIssueModal({
                 </div>
               </div>
 
-              {/* 상품별 집계 */}
+              {/* 상품별 집계 — 수량·공급가 직접 수정 가능 */}
               <div>
-                <p className="text-[12.5px] font-semibold text-slate-600 mb-2">상품별 집계</p>
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-[12.5px] font-semibold text-slate-600">판매 집계</p>
+                  <p className="text-[11px] text-slate-400">수량·공급가 수정 가능</p>
+                </div>
                 <div className="bg-slate-50 rounded-xl overflow-hidden border border-slate-100">
                   <table className="w-full text-xs">
                     <thead>
                       <tr className="bg-slate-100 text-slate-500">
                         <th className="px-3 py-2 text-left">상품명</th>
-                        <th className="px-3 py-2 text-right">주문</th>
-                        <th className="px-3 py-2 text-right">수량</th>
+                        <th className="px-3 py-2 text-right">판매수량</th>
                         <th className="px-3 py-2 text-right">공급가</th>
                         <th className="px-3 py-2 text-right">판매가</th>
                         <th className="px-3 py-2 text-right">총매출</th>
@@ -546,10 +503,15 @@ function SettlementIssueModal({
                     <tbody>
                       {summaries.map((s, i) => (
                         <tr key={i} className="border-t border-slate-100 bg-white">
-                          <td className="px-3 py-2 font-medium text-slate-700 max-w-[160px] truncate">{s.name}</td>
-                          <td className="px-3 py-2 text-right text-slate-500">{s.orderCount}</td>
-                          <td className="px-3 py-2 text-right text-slate-500">{s.qty}</td>
-                          <td className="px-3 py-2 text-right text-slate-500">{s.supplyPrice.toLocaleString()}</td>
+                          <td className="px-3 py-2 font-medium text-slate-700 max-w-[140px] truncate">{s.name}</td>
+                          <td className="px-3 py-2 text-right">
+                            <input type="number" value={s.qty} onChange={e => updateSummary(i, 'qty', Number(e.target.value))}
+                              className="w-16 text-right px-1.5 py-1 border border-slate-200 rounded bg-white text-slate-700 outline-none focus:border-teal-400" />
+                          </td>
+                          <td className="px-3 py-2 text-right">
+                            <input type="number" value={s.supplyPrice} onChange={e => updateSummary(i, 'supplyPrice', Number(e.target.value))}
+                              className="w-20 text-right px-1.5 py-1 border border-slate-200 rounded bg-white text-slate-700 outline-none focus:border-teal-400" />
+                          </td>
                           <td className="px-3 py-2 text-right text-slate-500">{s.salePrice.toLocaleString()}</td>
                           <td className="px-3 py-2 text-right font-semibold text-slate-700">{s.totalSale.toLocaleString()}</td>
                         </tr>
@@ -608,20 +570,11 @@ function SettlementIssueModal({
             </div>
           )}
 
-          {/* STEP: 완료 */}
-          {step === 'done' && (
-            <div className="flex flex-col items-center py-8 gap-3">
-              <CheckCircle2 size={40} className="text-emerald-500" />
-              <p className="text-sm font-semibold text-slate-700">정산서 발급 완료</p>
-              <p className="text-xs text-slate-400">매출 데이터가 상품에 반영됐습니다.</p>
-            </div>
-          )}
         </div>
 
         <div className="flex justify-end gap-2 px-7 py-4 border-t border-slate-100">
-          <button onClick={() => { setStep('upload'); setSummaries([]); }} className="px-4 py-2 text-sm font-semibold text-slate-400 hover:text-slate-600">← 다시 업로드</button>
           <button onClick={onClose} className="px-4 py-2 text-sm font-semibold text-slate-500 border border-slate-200 rounded-lg hover:bg-slate-50">닫기</button>
-          {step === 'review' && calc && (
+          {calc && (
             <button onClick={handleApply}
               className="flex items-center gap-1.5 px-5 py-2 text-sm font-semibold bg-teal-500 text-white rounded-lg hover:bg-teal-600">
               <CheckCircle2 size={14} /> 매출 반영
