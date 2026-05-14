@@ -102,7 +102,7 @@ const mockProducts: Product[] = [
     supplyPrice: 21546, dhRatio: 3, crRatio: 7,
     marketStart: '2026.04.22', marketEnd: '2026.04.24',
     revenue: 6633800, crPaid: 1748749, dhProfit: 749637,
-    shippingFee: 371000,
+    shippingFee: 2832,  // 건당 배송비 (371,000 / 131건)
   },
   {
     id: 'm06', name: '한솥밥 떡갈비 도시락', brand: '풍림푸드', category: '식품', price: 12900, discountRate: 0,
@@ -464,9 +464,7 @@ function SettlementIssueModal({
   }];
 
   const [summaries, setSummaries] = useState<ProductSummary[]>(initSummary);
-  const [shippingPerUnit, setShippingPerUnit] = useState<number>(
-    product.shippingFee && product.sales > 0 ? Math.round(product.shippingFee / product.sales) : 0
-  );
+  const [shippingPerUnit, setShippingPerUnit] = useState<number>(product.shippingFee ?? 0);
   const [freeShippingThreshold, setFreeShippingThreshold] = useState<number>(0); // 0 = 없음
   const [period, setPeriod] = useState(`${product.marketStart ?? ''} ~ ${product.marketEnd ?? ''}`);
   const [downloading, setDownloading] = useState<'brand' | 'creator' | null>(null);
@@ -1196,7 +1194,7 @@ export default function ProductsPage() {
                       <Field label="MG 금액 (원)"><input type="number" value={form.mgAmount || ''} onChange={e => sf('mgAmount', e.target.value)} placeholder="5000000" className={inputCls} /></Field>
                     )}
                     {isPurchase && (
-                      <Field label="배송비 (원)"><input type="number" value={form.shippingFee || ''} onChange={e => sf('shippingFee', e.target.value)} placeholder="예: 371000" className={inputCls} /></Field>
+                      <Field label="건당 배송비 (원)"><input type="number" value={form.shippingFee || ''} onChange={e => sf('shippingFee', e.target.value)} placeholder="예: 3000" className={inputCls} /></Field>
                     )}
                     <Field label="진행 시작일"><input value={form.marketStart || ''} onChange={e => sf('marketStart', e.target.value)} placeholder="2026.05.21" className={inputCls} /></Field>
                     <Field label="진행 종료일"><input value={form.marketEnd || ''} onChange={e => sf('marketEnd', e.target.value)} placeholder="2026.05.24" className={inputCls} /></Field>
