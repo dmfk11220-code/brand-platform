@@ -3,7 +3,7 @@ import './globals.css';
 import Sidebar from '@/components/Sidebar';
 
 export const metadata: Metadata = {
-  title: '두호 플랫폼',
+  title: '스튜디오플랫폼',
   description: '브랜드 관리 플랫폼',
 };
 

@@ -30,21 +30,21 @@ interface Creator {
 }
 
 const mockCreators: Creator[] = [
-  { id: '41', name: '레미니씬', handle: '@reminiscene_', platform: '인스타그램', category: '패션', followers: 7777000, followersDisplay: 'IG 778만 · TT 41.7만', commissionRate: 12, phone: '', hashtags: ['#패션', '#뷰티', '#필터'], status: '활성', joinedAt: '2024-01-01', taxType: '일반과세', contract: '전속' },
-  { id: '97', name: '애정', handle: '@ae_jeong_', platform: '유튜브', category: '먹방', followers: 3480000, followersDisplay: 'YT 348만 · TT 270만 · IG 35만', commissionRate: 12, phone: '', hashtags: ['#먹방', '#푸드'], status: '활성', joinedAt: '2024-01-01', taxType: '일반과세', contract: '전속' },
-  { id: '18', name: '김체리', handle: '@kimcherry_tt', platform: '틱톡', category: '댄스', followers: 2000000, followersDisplay: 'TT 200만 · YT 12.1만 · IG 16.1만', commissionRate: 8, phone: '', hashtags: ['#댄스', '#챌린지'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
-  { id: '20', name: '진경', handle: '@jinkyoung_ig', platform: '인스타그램', category: '일상', followers: 1583000, followersDisplay: 'IG 158만 · YT 44.7만', commissionRate: 12, phone: '', hashtags: ['#일상', '#라이프'], status: '활성', joinedAt: '2024-01-01', taxType: '일반과세', contract: '전속' },
-  { id: '35', name: '이펠(최명)', handle: '@eiffel_choi', platform: '틱톡', category: '음악', followers: 843600, followersDisplay: 'TT 84.4만 · IG 31.4만', commissionRate: 8, phone: '', hashtags: ['#음악', '#커버'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
-  { id: '2', name: '류스펜나', handle: '@cornu_ryu', platform: '유튜브', category: '일상', followers: 688000, followersDisplay: 'YT 68.8만 · TT 19.4만 · IG 20.9만', commissionRate: 8, phone: '', hashtags: ['#일상', '#뷰티', '#여행'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
-  { id: '6', name: '켈리', handle: '@kelly_tt', platform: '틱톡', category: '댄스', followers: 605000, followersDisplay: 'TT 60.5만 · YT 35.8만', commissionRate: 8, phone: '', hashtags: ['#댄스', '#챌린지'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
-  { id: '66', name: '송수이', handle: '@songsui', platform: '틱톡', category: '패션', followers: 685000, followersDisplay: 'TT 68.5만 · IG 28.5만', commissionRate: 8, phone: '', hashtags: ['#일상', '#뷰티', '#패션'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
-  { id: '1', name: '뭉순임당', handle: '@ahnhaeyo', platform: '유튜브', category: '먹방', followers: 698000, followersDisplay: 'YT 69.8만 · TT 15.3만 · IG 11.3만', commissionRate: 12, phone: '', hashtags: ['#일상', '#먹방', '#뷰티'], status: '활성', joinedAt: '2024-01-01', taxType: '일반과세', contract: '일부 전속' },
-  { id: '126', name: '인아짱', handle: '@inahjjang', platform: '유튜브', category: '먹방', followers: 749000, followersDisplay: 'YT 74.9만 · IG 14.7만', commissionRate: 8, phone: '', hashtags: ['#먹방'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
-  { id: '88', name: '제롬', handle: '@jerome_daily', platform: '유튜브', category: '일상', followers: 465000, followersDisplay: 'YT 46.5만 · IG 27.2만', commissionRate: 12, phone: '', hashtags: ['#일상', '#뷰티', '#패션'], status: '활성', joinedAt: '2024-01-01', taxType: '일반과세', contract: '전속' },
-  { id: '51', name: '츄베릅', handle: '@chuverb', platform: '유튜브', category: '먹방', followers: 376000, followersDisplay: 'YT 37.6만 · TT 17.4만 · IG 15.9만', commissionRate: 8, phone: '', hashtags: ['#먹방'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
-  { id: '10', name: '그대들의 센세', handle: '@grm_sense', platform: '유튜브', category: '일상', followers: 407800, followersDisplay: 'TT 40.8만 · YT 19.7만 · IG 7.8만', commissionRate: 8, phone: '', hashtags: ['#일상', '#외국어'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
-  { id: '3', name: '융나', handle: '@yoong_na_99', platform: '유튜브', category: '일상', followers: 634000, followersDisplay: 'YT 63.4만 · IG 3.6만', commissionRate: 8, phone: '', hashtags: ['#일상'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
-  { id: '67', name: '황소영', handle: '@hwangsoyoung', platform: '틱톡', category: '패션', followers: 510600, followersDisplay: 'TT 51.1만 · IG 16.2만', commissionRate: 8, phone: '', hashtags: ['#일상', '#패션'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
+  { id: '41', name: '하늘빛', handle: '@haneulbit_official', platform: '인스타그램', category: '패션', followers: 7520000, followersDisplay: 'IG 752만 · TT 38.4만', commissionRate: 12, phone: '', hashtags: ['#패션', '#뷰티', '#필터'], status: '활성', joinedAt: '2024-01-01', taxType: '일반과세', contract: '전속' },
+  { id: '97', name: '별빛소녀', handle: '@starlight_girl', platform: '유튜브', category: '먹방', followers: 3320000, followersDisplay: 'YT 332만 · TT 251만 · IG 41만', commissionRate: 12, phone: '', hashtags: ['#먹방', '#푸드'], status: '활성', joinedAt: '2024-01-01', taxType: '일반과세', contract: '전속' },
+  { id: '18', name: '루나스타', handle: '@lunastar_tt', platform: '틱톡', category: '댄스', followers: 1950000, followersDisplay: 'TT 195만 · YT 11.8만 · IG 15.3만', commissionRate: 8, phone: '', hashtags: ['#댄스', '#챌린지'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
+  { id: '20', name: '채리블', handle: '@cherryble_ig', platform: '인스타그램', category: '일상', followers: 1610000, followersDisplay: 'IG 161만 · YT 43.2만', commissionRate: 12, phone: '', hashtags: ['#일상', '#라이프'], status: '활성', joinedAt: '2024-01-01', taxType: '일반과세', contract: '전속' },
+  { id: '35', name: '민들레', handle: '@mindle_music', platform: '틱톡', category: '음악', followers: 872000, followersDisplay: 'TT 87.2만 · IG 29.6만', commissionRate: 8, phone: '', hashtags: ['#음악', '#커버'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
+  { id: '2', name: '소울비트', handle: '@soulbeat_yt', platform: '유튜브', category: '일상', followers: 714000, followersDisplay: 'YT 71.4만 · TT 21.8만 · IG 19.5만', commissionRate: 8, phone: '', hashtags: ['#일상', '#뷰티', '#여행'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
+  { id: '6', name: '핑크무드', handle: '@pinkmood_tt', platform: '틱톡', category: '댄스', followers: 623000, followersDisplay: 'TT 62.3만 · YT 34.1만', commissionRate: 8, phone: '', hashtags: ['#댄스', '#챌린지'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
+  { id: '66', name: '아이리스', handle: '@iris_daily', platform: '틱톡', category: '패션', followers: 671000, followersDisplay: 'TT 67.1만 · IG 31.2만', commissionRate: 8, phone: '', hashtags: ['#일상', '#뷰티', '#패션'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
+  { id: '1', name: '그린위시', handle: '@greenwish_yt', platform: '유튜브', category: '먹방', followers: 682000, followersDisplay: 'YT 68.2만 · TT 14.9만 · IG 10.8만', commissionRate: 12, phone: '', hashtags: ['#일상', '#먹방', '#뷰티'], status: '활성', joinedAt: '2024-01-01', taxType: '일반과세', contract: '일부 전속' },
+  { id: '126', name: '블루웨이브', handle: '@bluewave_yt', platform: '유튜브', category: '먹방', followers: 763000, followersDisplay: 'YT 76.3만 · IG 13.4만', commissionRate: 8, phone: '', hashtags: ['#먹방'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
+  { id: '88', name: '플라워데이', handle: '@flowerday_yt', platform: '유튜브', category: '일상', followers: 452000, followersDisplay: 'YT 45.2만 · IG 26.8만', commissionRate: 12, phone: '', hashtags: ['#일상', '#뷰티', '#패션'], status: '활성', joinedAt: '2024-01-01', taxType: '일반과세', contract: '전속' },
+  { id: '51', name: '스카이블루', handle: '@skyblue_food', platform: '유튜브', category: '먹방', followers: 391000, followersDisplay: 'YT 39.1만 · TT 18.7만 · IG 14.2만', commissionRate: 8, phone: '', hashtags: ['#먹방'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
+  { id: '10', name: '골든아워', handle: '@goldenhour_vlog', platform: '유튜브', category: '일상', followers: 419000, followersDisplay: 'TT 41.9만 · YT 20.3만 · IG 8.1만', commissionRate: 8, phone: '', hashtags: ['#일상', '#외국어'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
+  { id: '3', name: '퍼플레인', handle: '@purplerain_yt', platform: '유튜브', category: '일상', followers: 618000, followersDisplay: 'YT 61.8만 · IG 4.2만', commissionRate: 8, phone: '', hashtags: ['#일상'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
+  { id: '67', name: '실버문', handle: '@silvermoon_tt', platform: '틱톡', category: '패션', followers: 524000, followersDisplay: 'TT 52.4만 · IG 17.9만', commissionRate: 8, phone: '', hashtags: ['#일상', '#패션'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
 ];
 
 const PLATFORMS: Platform[] = ['인스타그램', '유튜브', '틱톡', '블로그'];
@@ -192,7 +192,7 @@ export default function CreatorsPage() {
       <div className="flex items-start justify-between mb-7">
         <div>
           <h1 className="text-[22px] font-bold">크리에이터 관리</h1>
-          <p className="text-sm text-slate-400 mt-1">두호 소속 크리에이터 {creators.length}명</p>
+          <p className="text-sm text-slate-400 mt-1">스튜디오플랫폼 소속 크리에이터 {creators.length}명</p>
         </div>
         <button onClick={openAdd} className="flex items-center gap-2 px-4 py-2.5 bg-indigo-500 text-white text-sm font-semibold rounded-xl hover:bg-indigo-600 transition-colors">
           <Plus size={16} /> 크리에이터 추가

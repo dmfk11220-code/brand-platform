@@ -6,8 +6,8 @@ import { Save } from 'lucide-react';
 export default function SettingsPage() {
   const [saved, setSaved] = useState(false);
   const [form, setForm] = useState({
-    companyName: '두호',
-    email: 'contact@dooho.kr',
+    companyName: '스튜디오플랫폼',
+    email: 'contact@studioplatform.kr',
     phone: '02-0000-0000',
     defaultCommission: '12',
     settlementDay: '10',

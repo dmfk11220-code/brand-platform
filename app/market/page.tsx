@@ -28,38 +28,38 @@ interface Deal {
   dhProfit: number | null;  // DH 순이익
 }
 
-// ── 실제 데이터 (2604, 2605 시트 기반) ──────────────────────
+// ── 목업 데이터 (2604, 2605 시트 기반) ──────────────────────
 const deals: Deal[] = [
   // ── 2605 (5월) ──
-  { id: 'd2605-01', month: '2605', manager: '배정은', brand: '뉴치트', creator: '워니', contract: 'RS', channel: '브랜드몰', startDate: '2026.04.27', endDate: '2026.05.01', status: '진행 완료', revenue: 18719100, rsRate: 0.20, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: 2382431, dhProfit: 971042 },
-  { id: 'd2605-02', month: '2605', manager: '배정은', brand: '셀올로지', creator: '다빈', contract: 'RS', channel: '자사몰', startDate: '2026.04.23', endDate: '2026.04.26', status: '진행 완료', revenue: null, rsRate: 0.40, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: null, dhProfit: null },
-  { id: 'd2605-03', month: '2605', manager: '김봄', brand: '그린몬스터', creator: '채도', contract: 'RS+MG', channel: '브랜드몰', startDate: '2026.05.12', endDate: '2026.05.15', status: '작업 중', revenue: null, rsRate: 0.30, dhRatio: 2, crRatio: 8, mgTotal: 4000000, crPaid: 3200000, dhProfit: 800000 },
-  { id: 'd2605-04', month: '2605', manager: '이유나', brand: '보바', creator: '리비', contract: 'RS+MG', channel: '자사몰', startDate: '2026.05.18', endDate: '2026.05.21', status: '컨택 중', revenue: null, rsRate: 0.25, dhRatio: 3, crRatio: 7, mgTotal: 6000000, crPaid: 4200000, dhProfit: 1800000 },
-  { id: 'd2605-05', month: '2605', manager: '이유나', brand: '오하입', creator: '디씨즈마테', contract: 'RS+MG', channel: '브랜드몰', startDate: '2026.05.18', endDate: '2026.05.21', status: '작업 중', revenue: null, rsRate: null, dhRatio: 3, crRatio: 7, mgTotal: 2000000, crPaid: 1400000, dhProfit: 600000 },
-  { id: 'd2605-06', month: '2605', manager: '김하늘', brand: '플라이밀', creator: '승진', contract: 'RS', channel: '브랜드몰', startDate: '2026.05.21', endDate: '2026.05.24', status: '작업 중', revenue: null, rsRate: 0.25, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: null, dhProfit: null },
-  { id: 'd2605-07', month: '2605', manager: '김하늘', brand: '싸이언티픽', creator: '다빈', contract: 'RS', channel: '브랜드몰', startDate: '2026.05.19', endDate: '2026.05.24', status: '컨택 중', revenue: null, rsRate: null, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: null, dhProfit: null },
-  { id: 'd2605-08', month: '2605', manager: '김하늘', brand: '채우닭', creator: '승진', contract: 'RS', channel: '브랜드몰', startDate: '2026.05.12', endDate: '2026.05.14', status: '진행 중', revenue: null, rsRate: 0.17, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: null, dhProfit: null },
-  { id: 'd2605-09', month: '2605', manager: '이유나', brand: '비비안', creator: '신혜림', contract: 'RS', channel: '자사몰', startDate: '2026.05.11', endDate: '2026.05.15', status: '상품 세팅', revenue: null, rsRate: null, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: null, dhProfit: null },
-  { id: 'd2605-10', month: '2605', manager: '김봄', brand: '휙', creator: '너큐', contract: 'RS', channel: '자사몰', startDate: '2026.05.20', endDate: '2026.05.24', status: '컨택 중', revenue: null, rsRate: 0.30, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: null, dhProfit: null },
-  { id: 'd2605-11', month: '2605', manager: '이유나', brand: '로얄캐네디언', creator: '예아', contract: 'RS+MG', channel: '브랜드몰', startDate: '2026.05.29', endDate: '2026.06.05', status: '컨택 중', revenue: null, rsRate: null, dhRatio: 3, crRatio: 7, mgTotal: 1000000, crPaid: 700000, dhProfit: 300000 },
-  { id: 'd2605-12', month: '2605', manager: '김봄', brand: '라티젠', creator: '혜지투즈', contract: 'RS+MG', channel: '타 플랫폼', startDate: '-', endDate: '-', status: '컨택 중', revenue: null, rsRate: null, dhRatio: 3, crRatio: 7, mgTotal: 16600000, crPaid: 11620000, dhProfit: 4980000 },
-  { id: 'd2605-13', month: '2605', manager: '이유나', brand: '성분에디터', creator: '채도', contract: 'RS+MG', channel: '자사몰', startDate: '연간계약', endDate: '-', status: '컨택 중', revenue: null, rsRate: null, dhRatio: 3, crRatio: 7, mgTotal: 8000000, crPaid: 6400000, dhProfit: 1600000 },
-  { id: 'd2605-14', month: '2605', manager: '김봄', brand: '성분에디터', creator: '김갈릭', contract: 'RS+MG', channel: '브랜드몰', startDate: '2026.05.18', endDate: '2026.05.22', status: '작업 중', revenue: null, rsRate: 0.35, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: null, dhProfit: 1500000 },
-  { id: 'd2605-15', month: '2605', manager: '배정은', brand: '메리몽드', creator: '이브이', contract: 'RS', channel: '자사몰', startDate: '2026.04.27', endDate: '2026.04.30', status: '진행 중', revenue: null, rsRate: 0.25, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: null, dhProfit: null },
+  { id: 'd2605-01', month: '2605', manager: '담당자A', brand: '그린푸드', creator: '골든아워', contract: 'RS', channel: '브랜드몰', startDate: '2026.04.27', endDate: '2026.05.01', status: '진행 완료', revenue: 18340000, rsRate: 0.20, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: 2330000, dhProfit: 954000 },
+  { id: 'd2605-02', month: '2605', manager: '담당자A', brand: '뷰티팩토리', creator: '아이리스', contract: 'RS', channel: '자사몰', startDate: '2026.04.23', endDate: '2026.04.26', status: '진행 완료', revenue: null, rsRate: 0.40, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: null, dhProfit: null },
+  { id: 'd2605-03', month: '2605', manager: '담당자B', brand: '스타일랩', creator: '하늘빛', contract: 'RS+MG', channel: '브랜드몰', startDate: '2026.05.12', endDate: '2026.05.15', status: '작업 중', revenue: null, rsRate: 0.30, dhRatio: 2, crRatio: 8, mgTotal: 4000000, crPaid: 3200000, dhProfit: 800000 },
+  { id: 'd2605-04', month: '2605', manager: '담당자C', brand: '홈리빙', creator: '그린위시', contract: 'RS+MG', channel: '자사몰', startDate: '2026.05.18', endDate: '2026.05.21', status: '컨택 중', revenue: null, rsRate: 0.25, dhRatio: 3, crRatio: 7, mgTotal: 6000000, crPaid: 4200000, dhProfit: 1800000 },
+  { id: 'd2605-05', month: '2605', manager: '담당자C', brand: '글로우코리아', creator: '퍼플레인', contract: 'RS+MG', channel: '브랜드몰', startDate: '2026.05.18', endDate: '2026.05.21', status: '작업 중', revenue: null, rsRate: null, dhRatio: 3, crRatio: 7, mgTotal: 2000000, crPaid: 1400000, dhProfit: 600000 },
+  { id: 'd2605-06', month: '2605', manager: '담당자D', brand: '그린푸드', creator: '골든아워', contract: 'RS', channel: '브랜드몰', startDate: '2026.05.21', endDate: '2026.05.24', status: '작업 중', revenue: null, rsRate: 0.25, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: null, dhProfit: null },
+  { id: 'd2605-07', month: '2605', manager: '담당자D', brand: '뷰티팩토리', creator: '아이리스', contract: 'RS', channel: '브랜드몰', startDate: '2026.05.19', endDate: '2026.05.24', status: '컨택 중', revenue: null, rsRate: null, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: null, dhProfit: null },
+  { id: 'd2605-08', month: '2605', manager: '담당자D', brand: '스타일랩', creator: '골든아워', contract: 'RS', channel: '브랜드몰', startDate: '2026.05.12', endDate: '2026.05.14', status: '진행 중', revenue: null, rsRate: 0.17, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: null, dhProfit: null },
+  { id: 'd2605-09', month: '2605', manager: '담당자C', brand: '홈리빙', creator: '플라워데이', contract: 'RS', channel: '자사몰', startDate: '2026.05.11', endDate: '2026.05.15', status: '상품 세팅', revenue: null, rsRate: null, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: null, dhProfit: null },
+  { id: 'd2605-10', month: '2605', manager: '담당자B', brand: '글로우코리아', creator: '실버문', contract: 'RS', channel: '자사몰', startDate: '2026.05.20', endDate: '2026.05.24', status: '컨택 중', revenue: null, rsRate: 0.30, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: null, dhProfit: null },
+  { id: 'd2605-11', month: '2605', manager: '담당자C', brand: '스타일랩', creator: '소울비트', contract: 'RS+MG', channel: '브랜드몰', startDate: '2026.05.29', endDate: '2026.06.05', status: '컨택 중', revenue: null, rsRate: null, dhRatio: 3, crRatio: 7, mgTotal: 1000000, crPaid: 700000, dhProfit: 300000 },
+  { id: 'd2605-12', month: '2605', manager: '담당자B', brand: '뷰티팩토리', creator: '민들레', contract: 'RS+MG', channel: '타 플랫폼', startDate: '-', endDate: '-', status: '컨택 중', revenue: null, rsRate: null, dhRatio: 3, crRatio: 7, mgTotal: 16600000, crPaid: 11620000, dhProfit: 4980000 },
+  { id: 'd2605-13', month: '2605', manager: '담당자C', brand: '글로우코리아', creator: '하늘빛', contract: 'RS+MG', channel: '자사몰', startDate: '연간계약', endDate: '-', status: '컨택 중', revenue: null, rsRate: null, dhRatio: 3, crRatio: 7, mgTotal: 8000000, crPaid: 6400000, dhProfit: 1600000 },
+  { id: 'd2605-14', month: '2605', manager: '담당자B', brand: '글로우코리아', creator: '채리블', contract: 'RS+MG', channel: '브랜드몰', startDate: '2026.05.18', endDate: '2026.05.22', status: '작업 중', revenue: null, rsRate: 0.35, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: null, dhProfit: 1500000 },
+  { id: 'd2605-15', month: '2605', manager: '담당자A', brand: '뷰티팩토리', creator: '별빛소녀', contract: 'RS', channel: '자사몰', startDate: '2026.04.27', endDate: '2026.04.30', status: '진행 중', revenue: null, rsRate: 0.25, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: null, dhProfit: null },
 
   // ── 2604 (4월) ──
-  { id: 'd2604-01', month: '2604', manager: '이유나', brand: '링컨디저트', creator: '애정', contract: 'RS', channel: '브랜드몰', startDate: '2026.03.14', endDate: '2026.03.20', status: '진행 완료', revenue: 761000, rsRate: 0.20, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: 96855, dhProfit: 41509 },
-  { id: 'd2604-02', month: '2604', manager: '이유나', brand: '스퀘어라인', creator: '채도', contract: 'RS+MG', channel: '브랜드몰', startDate: '2026.03.17', endDate: '2026.03.22', status: '진행 완료', revenue: 19886900, rsRate: 0.30, dhRatio: 2, crRatio: 8, mgTotal: null, crPaid: 4295570, dhProfit: 1073893 },
-  { id: 'd2604-03', month: '2604', manager: '배정은', brand: '마른파이브', creator: '디씨즈마테', contract: 'RS+MG', channel: '브랜드몰', startDate: '2026.03.22', endDate: '2026.03.25', status: '진행 완료', revenue: 14796300, rsRate: 0.30, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: 2824748, dhProfit: 1210606 },
-  { id: 'd2604-04', month: '2604', manager: '배정은', brand: '그린테크라이프', creator: '너큐', contract: 'RS', channel: '브랜드몰', startDate: '2026.03.23', endDate: '2026.03.27', status: '진행 완료', revenue: 4891000, rsRate: null, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: 344133, dhProfit: 147485 },
-  { id: 'd2604-05', month: '2604', manager: '김봄', brand: '그린몬스터', creator: '병권', contract: 'RS+MG', channel: '브랜드몰', startDate: '2026.03.30', endDate: '2026.04.01', status: '진행 완료', revenue: 1338400, rsRate: 0.32, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: 1561830, dhProfit: 470256 },
-  { id: 'd2604-06', month: '2604', manager: '이유나', brand: '오로라렌즈', creator: '포백', contract: 'RS+MG', channel: '브랜드몰', startDate: '2026.03.26', endDate: '2026.03.31', status: '진행 완료', revenue: 79933150, rsRate: 0.25, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: 11814844, dhProfit: 5063505 },
-  { id: 'd2604-07', month: '2604', manager: '배정은', brand: '러븀', creator: '티비조씨', contract: 'RS+MG', channel: '브랜드몰', startDate: '2026.04.02', endDate: '2026.04.05', status: '진행 완료', revenue: null, rsRate: null, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: 4200000, dhProfit: null },
-  { id: 'd2604-08', month: '2604', manager: '배정은', brand: '칼로비스', creator: '이브이', contract: 'RS', channel: '브랜드몰', startDate: '2026.04.03', endDate: '2026.04.05', status: '진행 완료', revenue: 1397100, rsRate: 0.45, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: 400079, dhProfit: 171462 },
-  { id: 'd2604-09', month: '2604', manager: '배정은', brand: '링컨디저트', creator: '애정', contract: 'RS', channel: '브랜드몰', startDate: '2026.04.03', endDate: '2026.04.07', status: '진행 완료', revenue: 507200, rsRate: 0.20, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: 64553, dhProfit: 27665 },
-  { id: 'd2604-10', month: '2604', manager: '김봄', brand: '성분에디터', creator: '시타', contract: 'RS+MG', channel: '브랜드몰', startDate: '2026.04.06', endDate: '2026.04.12', status: '진행 완료', revenue: null, rsRate: 0.30, dhRatio: 3, crRatio: 7, mgTotal: 2500000, crPaid: 1750000, dhProfit: 750000 },
-  { id: 'd2604-11', month: '2604', manager: '이유나', brand: '앰플엔', creator: '리비', contract: 'RS+MG', channel: '브랜드몰', startDate: '2026.04.08', endDate: '2026.04.12', status: '진행 완료', revenue: null, rsRate: null, dhRatio: 3, crRatio: 7, mgTotal: 7000000, crPaid: 3850000, dhProfit: 3150000 },
-  { id: 'd2604-12', month: '2604', manager: '배정은', brand: '풍림푸드', creator: '승진', contract: 'RS', channel: '브랜드몰', startDate: '2026.04.08', endDate: '2026.04.10', status: '진행 완료', revenue: 6199050, rsRate: 0.17, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: 670625, dhProfit: 287411 },
+  { id: 'd2604-01', month: '2604', manager: '담당자C', brand: '그린푸드', creator: '별빛소녀', contract: 'RS', channel: '브랜드몰', startDate: '2026.03.14', endDate: '2026.03.20', status: '진행 완료', revenue: 814000, rsRate: 0.20, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: 103600, dhProfit: 44400 },
+  { id: 'd2604-02', month: '2604', manager: '담당자C', brand: '글로우코리아', creator: '하늘빛', contract: 'RS+MG', channel: '브랜드몰', startDate: '2026.03.17', endDate: '2026.03.22', status: '진행 완료', revenue: 19520000, rsRate: 0.30, dhRatio: 2, crRatio: 8, mgTotal: null, crPaid: 4218000, dhProfit: 1054000 },
+  { id: 'd2604-03', month: '2604', manager: '담당자A', brand: '스타일랩', creator: '퍼플레인', contract: 'RS+MG', channel: '브랜드몰', startDate: '2026.03.22', endDate: '2026.03.25', status: '진행 완료', revenue: 14230000, rsRate: 0.30, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: 2720000, dhProfit: 1163000 },
+  { id: 'd2604-04', month: '2604', manager: '담당자A', brand: '홈리빙', creator: '실버문', contract: 'RS', channel: '브랜드몰', startDate: '2026.03.23', endDate: '2026.03.27', status: '진행 완료', revenue: 5120000, rsRate: null, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: 360000, dhProfit: 154000 },
+  { id: 'd2604-05', month: '2604', manager: '담당자B', brand: '스타일랩', creator: '루나스타', contract: 'RS+MG', channel: '브랜드몰', startDate: '2026.03.30', endDate: '2026.04.01', status: '진행 완료', revenue: 1280000, rsRate: 0.32, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: 1490000, dhProfit: 450000 },
+  { id: 'd2604-06', month: '2604', manager: '담당자C', brand: '뷰티팩토리', creator: '블루웨이브', contract: 'RS+MG', channel: '브랜드몰', startDate: '2026.03.26', endDate: '2026.03.31', status: '진행 완료', revenue: 78450000, rsRate: 0.25, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: 11610000, dhProfit: 4980000 },
+  { id: 'd2604-07', month: '2604', manager: '담당자A', brand: '홈리빙', creator: '플라워데이', contract: 'RS+MG', channel: '브랜드몰', startDate: '2026.04.02', endDate: '2026.04.05', status: '진행 완료', revenue: null, rsRate: null, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: 4200000, dhProfit: null },
+  { id: 'd2604-08', month: '2604', manager: '담당자A', brand: '그린푸드', creator: '별빛소녀', contract: 'RS', channel: '브랜드몰', startDate: '2026.04.03', endDate: '2026.04.05', status: '진행 완료', revenue: 1452000, rsRate: 0.45, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: 415000, dhProfit: 178000 },
+  { id: 'd2604-09', month: '2604', manager: '담당자A', brand: '그린푸드', creator: '별빛소녀', contract: 'RS', channel: '브랜드몰', startDate: '2026.04.03', endDate: '2026.04.07', status: '진행 완료', revenue: 542000, rsRate: 0.20, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: 69000, dhProfit: 29500 },
+  { id: 'd2604-10', month: '2604', manager: '담당자B', brand: '글로우코리아', creator: '소울비트', contract: 'RS+MG', channel: '브랜드몰', startDate: '2026.04.06', endDate: '2026.04.12', status: '진행 완료', revenue: null, rsRate: 0.30, dhRatio: 3, crRatio: 7, mgTotal: 2500000, crPaid: 1750000, dhProfit: 750000 },
+  { id: 'd2604-11', month: '2604', manager: '담당자C', brand: '뷰티팩토리', creator: '그린위시', contract: 'RS+MG', channel: '브랜드몰', startDate: '2026.04.08', endDate: '2026.04.12', status: '진행 완료', revenue: null, rsRate: null, dhRatio: 3, crRatio: 7, mgTotal: 7000000, crPaid: 3850000, dhProfit: 3150000 },
+  { id: 'd2604-12', month: '2604', manager: '담당자A', brand: '그린푸드', creator: '골든아워', contract: 'RS', channel: '브랜드몰', startDate: '2026.04.08', endDate: '2026.04.10', status: '진행 완료', revenue: 6050000, rsRate: 0.17, dhRatio: 3, crRatio: 7, mgTotal: null, crPaid: 655000, dhProfit: 280000 },
 ];
 
 // ── 헬퍼 ──────────────────────────────────────────────────────
@@ -70,10 +70,10 @@ function fmt(n: number) {
 }
 
 const MANAGER_STYLE: Record<string, string> = {
-  '이유나':  'bg-pink-500/15 text-pink-300',
-  '김봄':    'bg-emerald-500/15 text-emerald-300',
-  '배정은':  'bg-sky-500/15 text-sky-300',
-  '김하늘':  'bg-violet-500/15 text-violet-300',
+  '담당자A': 'bg-pink-500/15 text-pink-300',
+  '담당자B': 'bg-emerald-500/15 text-emerald-300',
+  '담당자C': 'bg-sky-500/15 text-sky-300',
+  '담당자D': 'bg-violet-500/15 text-violet-300',
 };
 
 const CONTRACT_STYLE: Record<ContractType, string> = {

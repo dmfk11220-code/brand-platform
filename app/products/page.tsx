@@ -67,89 +67,89 @@ interface ParsedCandidate {
 // ── 목업 데이터 ──────────────────────────────────────
 const mockProducts: Product[] = [
   {
-    id: 'm01', name: '뉴치트 쉐이크', brand: '뉴치트', category: '식품', price: 66900, discountRate: 0,
-    stock: 0, status: '진행완료', sales: 250, creator: '워니', thumbnail: '🥤', createdAt: '2026-04-27',
+    id: 'm01', name: '그린푸드 단백질 쉐이크', brand: '그린푸드', category: '식품', price: 66900, discountRate: 0,
+    stock: 0, status: '진행완료', sales: 250, creator: '골든아워', thumbnail: '🥤', createdAt: '2026-04-27',
     saleType: '마켓(공구)', contract: 'RS', channel: '브랜드몰',
     rsRate: 0.20, dhRatio: 3, crRatio: 7,
     marketStart: '2026.04.27', marketEnd: '2026.05.01',
-    revenue: 18719100, crPaid: 2382431, dhProfit: 971042,
+    revenue: 18340000, crPaid: 2330000, dhProfit: 954000,
   },
   {
-    id: 'm02', name: '율무톡스 버블팩', brand: '셀올로지', category: '뷰티', price: 42800, discountRate: 0,
-    stock: 0, status: '진행완료', sales: 0, creator: '다빈', thumbnail: '🫧', createdAt: '2026-04-23',
+    id: 'm02', name: '뷰티팩토리 버블팩', brand: '뷰티팩토리', category: '뷰티', price: 42800, discountRate: 0,
+    stock: 0, status: '진행완료', sales: 0, creator: '아이리스', thumbnail: '🫧', createdAt: '2026-04-23',
     saleType: '마켓(공구)', contract: 'RS', channel: '타 플랫폼',
     rsRate: 0.40, dhRatio: 3, crRatio: 7,
     marketStart: '2026.04.23', marketEnd: '2026.04.26',
   },
   {
-    id: 'm03', name: 'KAIA 레이어드 세트', brand: '스퀘어라인', category: '패션', price: 88500, discountRate: 0,
-    stock: 0, status: '진행완료', sales: 225, creator: '채도', thumbnail: '👗', createdAt: '2026-03-17',
+    id: 'm03', name: '글로우코리아 레이어드 세트', brand: '글로우코리아', category: '패션', price: 88500, discountRate: 0,
+    stock: 0, status: '진행완료', sales: 225, creator: '하늘빛', thumbnail: '👗', createdAt: '2026-03-17',
     saleType: '마켓(공구)', contract: 'RS+MG', channel: '브랜드몰',
     rsRate: 0.30, dhRatio: 2, crRatio: 8,
     marketStart: '2026.03.17', marketEnd: '2026.03.22',
-    revenue: 19886900, crPaid: 4295570, dhProfit: 1073893,
+    revenue: 19520000, crPaid: 4218000, dhProfit: 1054000,
   },
   {
-    id: 'm04', name: '오로라렌즈 콜라보 에디션', brand: '오로라렌즈', category: '뷰티', price: 96600, discountRate: 0,
-    stock: 0, status: '진행완료', sales: 827, creator: '포백', thumbnail: '👁️', createdAt: '2026-03-26',
+    id: 'm04', name: '뷰티팩토리 콜라보 에디션', brand: '뷰티팩토리', category: '뷰티', price: 96600, discountRate: 0,
+    stock: 0, status: '진행완료', sales: 811, creator: '블루웨이브', thumbnail: '👁️', createdAt: '2026-03-26',
     saleType: '마켓(공구)', contract: 'RS+MG', channel: '브랜드몰',
     rsRate: 0.25, dhRatio: 3, crRatio: 7,
     marketStart: '2026.03.26', marketEnd: '2026.03.31',
-    revenue: 79933150, crPaid: 11814844, dhProfit: 5063505,
+    revenue: 78450000, crPaid: 11610000, dhProfit: 4980000,
   },
   {
-    id: 'm05', name: '귀빈정 간장게장 세트', brand: '귀빈정', category: '식품', price: 39900, discountRate: 0,
-    stock: 0, status: '진행완료', sales: 131, creator: '슬기선생님', thumbnail: '🦀', createdAt: '2026-04-22',
+    id: 'm05', name: '그린푸드 프리미엄 간식 세트', brand: '그린푸드', category: '식품', price: 39900, discountRate: 0,
+    stock: 0, status: '진행완료', sales: 131, creator: '소울비트', thumbnail: '🎁', createdAt: '2026-04-22',
     saleType: '마켓(공구)', contract: '매입', channel: '자사몰',
     supplyPrice: 21546, dhRatio: 3, crRatio: 7,
     marketStart: '2026.04.22', marketEnd: '2026.04.24',
-    revenue: 6633800, crPaid: 1748749, dhProfit: 749637,
-    shippingFee: 2832,  // 건당 배송비 (371,000 / 131건)
+    revenue: 6050000, crPaid: 1595000, dhProfit: 683000,
+    shippingFee: 2832,
   },
   {
-    id: 'm06', name: '한솥밥 떡갈비 도시락', brand: '풍림푸드', category: '식품', price: 12900, discountRate: 0,
-    stock: 0, status: '진행완료', sales: 480, creator: '승진', thumbnail: '🍱', createdAt: '2026-04-08',
+    id: 'm06', name: '그린푸드 도시락 세트', brand: '그린푸드', category: '식품', price: 12900, discountRate: 0,
+    stock: 0, status: '진행완료', sales: 480, creator: '골든아워', thumbnail: '🍱', createdAt: '2026-04-08',
     saleType: '마켓(공구)', contract: 'RS', channel: '브랜드몰',
     rsRate: 0.17, dhRatio: 3, crRatio: 7,
     marketStart: '2026.04.08', marketEnd: '2026.04.10',
-    revenue: 6199050, crPaid: 670625, dhProfit: 287411,
+    revenue: 6050000, crPaid: 655000, dhProfit: 280000,
   },
   {
-    id: 'm07', name: '앰플엔 세럼 기획세트', brand: '앰플엔', category: '뷰티', price: 58000, discountRate: 0,
-    stock: 0, status: '진행완료', sales: 0, creator: '리비', thumbnail: '💧', createdAt: '2026-04-08',
+    id: 'm07', name: '뷰티팩토리 세럼 기획세트', brand: '뷰티팩토리', category: '뷰티', price: 58000, discountRate: 0,
+    stock: 0, status: '진행완료', sales: 0, creator: '그린위시', thumbnail: '💧', createdAt: '2026-04-08',
     saleType: '마켓(공구)', contract: 'RS+MG', channel: '브랜드몰',
     mgAmount: 7000000, dhRatio: 3, crRatio: 7,
     marketStart: '2026.04.08', marketEnd: '2026.04.12',
     crPaid: 3850000, dhProfit: 3150000,
   },
   {
-    id: 'm08', name: '그린몬스터 콜라보 티셔츠', brand: '그린몬스터', category: '패션', price: 49000, discountRate: 0,
-    stock: 150, status: '진행예정', sales: 0, creator: '채도', thumbnail: '👕', createdAt: '2026-05-12',
+    id: 'm08', name: '스타일랩 콜라보 티셔츠', brand: '스타일랩', category: '패션', price: 49000, discountRate: 0,
+    stock: 150, status: '진행예정', sales: 0, creator: '하늘빛', thumbnail: '👕', createdAt: '2026-05-12',
     saleType: '마켓(공구)', contract: '매입', channel: '자사몰',
     supplyPrice: 18000, dhRatio: 2, crRatio: 8, mgAmount: 4000000,
     marketStart: '2026.05.12', marketEnd: '2026.05.15',
   },
   {
-    id: 'm09', name: '플라이밀 프로틴바 10입', brand: '플라이밀', category: '식품', price: 32000, discountRate: 0,
-    stock: 300, status: '진행예정', sales: 0, creator: '승진', thumbnail: '🍫', createdAt: '2026-05-21',
+    id: 'm09', name: '그린푸드 프로틴바 10입', brand: '그린푸드', category: '식품', price: 32000, discountRate: 0,
+    stock: 300, status: '진행예정', sales: 0, creator: '골든아워', thumbnail: '🍫', createdAt: '2026-05-21',
     saleType: '마켓(공구)', contract: 'RS', channel: '브랜드몰',
     rsRate: 0.25, dhRatio: 3, crRatio: 7,
     marketStart: '2026.05.21', marketEnd: '2026.05.24',
   },
   // ── 상시판매 ──
   {
-    id: 's01', name: '두호 DH 에코백', brand: '두호', category: '패션', price: 29000, discountRate: 10,
-    stock: 245, status: '판매중', sales: 382, creator: '레미니씬', thumbnail: '👜', createdAt: '2025-12-01',
+    id: 's01', name: '스튜디오플랫폼 에코백', brand: '스타일랩', category: '패션', price: 29000, discountRate: 10,
+    stock: 245, status: '판매중', sales: 382, creator: '하늘빛', thumbnail: '👜', createdAt: '2025-12-01',
     saleType: '상시판매',
   },
   {
-    id: 's02', name: '두호 시그니처 후드', brand: '두호', category: '패션', price: 69000, discountRate: 0,
-    stock: 88, status: '판매중', sales: 215, creator: '뭉순임당', thumbnail: '🧥', createdAt: '2026-01-15',
+    id: 's02', name: '스타일랩 시그니처 후드', brand: '스타일랩', category: '패션', price: 69000, discountRate: 0,
+    stock: 88, status: '판매중', sales: 215, creator: '그린위시', thumbnail: '🧥', createdAt: '2026-01-15',
     saleType: '상시판매',
   },
   {
-    id: 's03', name: '무결점 선크림 SPF50+', brand: '어뮤즈', category: '뷰티', price: 28000, discountRate: 5,
-    stock: 0, status: '품절', sales: 1840, creator: '진경', thumbnail: '🧴', createdAt: '2025-11-20',
+    id: 's03', name: '뷰티팩토리 선크림 SPF50+', brand: '뷰티팩토리', category: '뷰티', price: 28000, discountRate: 5,
+    stock: 0, status: '품절', sales: 1840, creator: '채리블', thumbnail: '🧴', createdAt: '2025-11-20',
     saleType: '상시판매',
   },
 ];
@@ -160,7 +160,7 @@ const CONTRACT_TYPES: ContractType[] = ['RS', 'RS+MG', 'MG', '매입'];
 const CHANNELS: SalesChannel[] = ['자사몰', '브랜드몰', '타 플랫폼'];
 const CATEGORIES: ProductCategory[] = ['패션', '뷰티', '식품', '생활', '스포츠', '기타'];
 const STATUSES: ProductStatus[] = ['판매중', '진행예정', '진행완료', '품절', '숨김'];
-const CREATORS = ['레미니씬', '애정', '김체리', '진경', '이펠(최명)', '류스펜나', '켈리', '송수이', '뭉순임당', '인아짱', '채도', '포백', '다빈', '승진', '리비', '워니', '슬기선생님', '티비조씨'];
+const CREATORS = ['하늘빛', '별빛소녀', '루나스타', '채리블', '민들레', '소울비트', '핑크무드', '아이리스', '그린위시', '블루웨이브', '플라워데이', '스카이블루', '골든아워', '퍼플레인', '실버문'];
 
 // ── 스타일 맵 ─────────────────────────────────────────
 const SALE_TYPE_STYLE: Record<SaleType, string> = {

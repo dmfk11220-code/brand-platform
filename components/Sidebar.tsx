@@ -32,7 +32,7 @@ export default function Sidebar() {
   return (
     <aside className="w-56 bg-[#0f1117] flex flex-col py-7 flex-shrink-0 h-screen sticky top-0">
       <div className="px-6 mb-8 text-xl font-extrabold text-white tracking-tight">
-        두호<span className="text-indigo-400">.</span>
+        Studio<span className="text-indigo-400">.</span>
       </div>
 
       <nav className="flex flex-col gap-1">

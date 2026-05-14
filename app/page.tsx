@@ -5,33 +5,33 @@ import { TrendingUp, Users, Tag, ArrowUpRight, ArrowDownRight } from 'lucide-rea
 
 // ── 목업 데이터 ──
 const gmvData = [
-  { date: '05/08', gmv: 4200000, sales: 312, monthly: 38200000 },
-  { date: '05/09', gmv: 3800000, sales: 287, monthly: 42000000 },
-  { date: '05/10', gmv: 5100000, sales: 401, monthly: 47100000 },
-  { date: '05/11', gmv: 4700000, sales: 365, monthly: 51800000 },
-  { date: '05/12', gmv: 6200000, sales: 489, monthly: 58000000 },
-  { date: '05/13', gmv: 5800000, sales: 452, monthly: 63800000 },
-  { date: '05/14', gmv: 4900000, sales: 378, monthly: 68700000 },
+  { date: '05/08', gmv: 3870000, sales: 294, monthly: 35600000 },
+  { date: '05/09', gmv: 4130000, sales: 318, monthly: 39730000 },
+  { date: '05/10', gmv: 5420000, sales: 413, monthly: 45150000 },
+  { date: '05/11', gmv: 4880000, sales: 371, monthly: 50030000 },
+  { date: '05/12', gmv: 6050000, sales: 462, monthly: 56080000 },
+  { date: '05/13', gmv: 5730000, sales: 438, monthly: 61810000 },
+  { date: '05/14', gmv: 5170000, sales: 396, monthly: 66980000 },
 ];
 
 const creatorData = [
-  { date: '05/08', gmv: 1800000, sales: 134, monthly: 16200000 },
-  { date: '05/09', gmv: 1600000, sales: 118, monthly: 17800000 },
-  { date: '05/10', gmv: 2200000, sales: 178, monthly: 20000000 },
-  { date: '05/11', gmv: 2000000, sales: 156, monthly: 22000000 },
-  { date: '05/12', gmv: 2700000, sales: 214, monthly: 24700000 },
-  { date: '05/13', gmv: 2500000, sales: 198, monthly: 27200000 },
-  { date: '05/14', gmv: 2100000, sales: 163, monthly: 29300000 },
+  { date: '05/08', gmv: 1650000, sales: 122, monthly: 15300000 },
+  { date: '05/09', gmv: 1820000, sales: 138, monthly: 17120000 },
+  { date: '05/10', gmv: 2380000, sales: 182, monthly: 19500000 },
+  { date: '05/11', gmv: 2110000, sales: 161, monthly: 21610000 },
+  { date: '05/12', gmv: 2640000, sales: 207, monthly: 24250000 },
+  { date: '05/13', gmv: 2490000, sales: 193, monthly: 26740000 },
+  { date: '05/14', gmv: 2250000, sales: 171, monthly: 28990000 },
 ];
 
 const brandData = [
-  { date: '05/08', gmv: 2400000, sales: 178, monthly: 22000000 },
-  { date: '05/09', gmv: 2200000, sales: 169, monthly: 24200000 },
-  { date: '05/10', gmv: 2900000, sales: 223, monthly: 27100000 },
-  { date: '05/11', gmv: 2700000, sales: 209, monthly: 29800000 },
-  { date: '05/12', gmv: 3500000, sales: 275, monthly: 33300000 },
-  { date: '05/13', gmv: 3300000, sales: 254, monthly: 36600000 },
-  { date: '05/14', gmv: 2800000, sales: 215, monthly: 39400000 },
+  { date: '05/08', gmv: 2220000, sales: 172, monthly: 20300000 },
+  { date: '05/09', gmv: 2310000, sales: 180, monthly: 22610000 },
+  { date: '05/10', gmv: 3040000, sales: 231, monthly: 25650000 },
+  { date: '05/11', gmv: 2770000, sales: 210, monthly: 28420000 },
+  { date: '05/12', gmv: 3410000, sales: 255, monthly: 31830000 },
+  { date: '05/13', gmv: 3240000, sales: 245, monthly: 35070000 },
+  { date: '05/14', gmv: 2920000, sales: 225, monthly: 37990000 },
 ];
 
 const inflowData = [
