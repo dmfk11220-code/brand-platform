@@ -464,7 +464,10 @@ function SettlementIssueModal({
   }];
 
   const [summaries, setSummaries] = useState<ProductSummary[]>(initSummary);
-  const [shippingFee, setShippingFee] = useState(product.shippingFee ?? 0);
+  const [shippingPerUnit, setShippingPerUnit] = useState<number>(
+    product.shippingFee && product.sales > 0 ? Math.round(product.shippingFee / product.sales) : 0
+  );
+  const [freeShippingThreshold, setFreeShippingThreshold] = useState<number>(0); // 0 = 없음
   const [period, setPeriod] = useState(`${product.marketStart ?? ''} ~ ${product.marketEnd ?? ''}`);
   const [downloading, setDownloading] = useState<'brand' | 'creator' | null>(null);
 
@@ -480,17 +483,24 @@ function SettlementIssueModal({
     }));
   };
 
-  const calc = calcPurchase(summaries, shippingFee, dhRatio, crRatio);
+  // 배송비 자동 계산: 무료배송 기준 적용
+  const totalQty = summaries.reduce((s, r) => s + r.qty, 0);
+  const effectiveShipping = summaries.reduce((total, s) => {
+    const isFree = freeShippingThreshold > 0 && s.salePrice >= freeShippingThreshold;
+    return total + (isFree ? 0 : shippingPerUnit * s.qty);
+  }, 0);
+
+  const calc = calcPurchase(summaries, effectiveShipping, dhRatio, crRatio);
 
   const handleDownloadBrand = async () => {
     setDownloading('brand');
-    await downloadBrandSettlement(product.brand, product.creator, period, summaries, shippingFee, calc);
+    await downloadBrandSettlement(product.brand, product.creator, period, summaries, effectiveShipping, calc);
     setDownloading(null);
   };
 
   const handleDownloadCreator = async () => {
     setDownloading('creator');
-    await downloadCreatorSettlement(product.creator, product.brand, period, summaries, shippingFee, calc, dhRatio, crRatio);
+    await downloadCreatorSettlement(product.creator, product.brand, period, summaries, effectiveShipping, calc, dhRatio, crRatio);
     setDownloading(null);
   };
 
@@ -522,15 +532,41 @@ function SettlementIssueModal({
           {/* 항상 바로 내용 확인 */}
           {true && calc && (
             <div className="flex flex-col gap-4">
-              {/* 판매 기간 + 배송비 */}
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <p className="text-[12.5px] font-semibold text-slate-600 mb-1.5">판매 기간</p>
-                  <input value={period} onChange={e => setPeriod(e.target.value)} className={inputCls} />
+              {/* 판매 기간 */}
+              <div>
+                <p className="text-[12.5px] font-semibold text-slate-600 mb-1.5">판매 기간</p>
+                <input value={period} onChange={e => setPeriod(e.target.value)} className={inputCls} />
+              </div>
+
+              {/* 배송비 계산 */}
+              <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 flex flex-col gap-3">
+                <p className="text-[12.5px] font-semibold text-slate-700">배송비</p>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <p className="text-[11px] text-slate-500 mb-1">건당 배송비 (원)</p>
+                    <input type="number" value={shippingPerUnit} onChange={e => setShippingPerUnit(Number(e.target.value))} className={inputCls} placeholder="예: 3000" />
+                  </div>
+                  <div>
+                    <p className="text-[11px] text-slate-500 mb-1">무료배송 기준금액 (0 = 없음)</p>
+                    <input type="number" value={freeShippingThreshold} onChange={e => setFreeShippingThreshold(Number(e.target.value))} className={inputCls} placeholder="예: 100000" />
+                  </div>
                 </div>
-                <div>
-                  <p className="text-[12.5px] font-semibold text-slate-600 mb-1.5">배송비 합계 (원)</p>
-                  <input type="number" value={shippingFee} onChange={e => setShippingFee(Number(e.target.value))} className={inputCls} />
+                {/* 계산 결과 미리보기 */}
+                <div className="flex items-center justify-between pt-1 border-t border-slate-200">
+                  <div className="text-[11px] text-slate-400">
+                    {freeShippingThreshold > 0
+                      ? <>건당 ₩{shippingPerUnit.toLocaleString()} × {totalQty}건
+                          {' '}
+                          <span className="text-teal-500">
+                            ({summaries.filter(s => s.salePrice >= freeShippingThreshold).reduce((a, s) => a + s.qty, 0)}건 무료배송 제외)
+                          </span>
+                        </>
+                      : <>건당 ₩{shippingPerUnit.toLocaleString()} × {totalQty}건</>
+                    }
+                  </div>
+                  <div className="text-[13px] font-bold text-slate-700">
+                    합계 ₩{effectiveShipping.toLocaleString()}
+                  </div>
                 </div>
               </div>
 
@@ -583,7 +619,7 @@ function SettlementIssueModal({
                   </div>
                   <div className="space-y-1.5 text-xs">
                     <SRow label="공급가 합계" value={calc.totalSupply} />
-                    <SRow label="배송비" value={shippingFee} />
+                    <SRow label="배송비" value={effectiveShipping} />
                     <div className="border-t border-teal-200 pt-1.5">
                       <SRow label="최종 합계" value={calc.brandTotal} bold />
                       <SRow label="공급가액 (VAT 제외)" value={calc.brandSupplyExclVat} muted />
