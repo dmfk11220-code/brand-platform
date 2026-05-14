@@ -995,7 +995,19 @@ export default function ProductsPage() {
   const handleSave = () => {
     if (!form.name?.trim() || !form.brand?.trim()) return alert('상품명과 브랜드를 입력해주세요.');
     if (editProduct) {
-      setProducts(prev => prev.map(p => p.id === editProduct.id ? { ...p, ...form } as Product : p));
+      setProducts(prev => prev.map(p => p.id === editProduct.id ? {
+        ...p, ...form,
+        price: Number(form.price) || p.price,
+        discountRate: Number(form.discountRate ?? p.discountRate),
+        stock: Number(form.stock ?? p.stock),
+        dhRatio: form.dhRatio ? Number(form.dhRatio) : p.dhRatio,
+        crRatio: form.crRatio ? Number(form.crRatio) : p.crRatio,
+        rsRate: form.rsRate ? Number(form.rsRate) : p.rsRate,
+        mgAmount: form.mgAmount ? Number(form.mgAmount) : p.mgAmount,
+        supplyPrice: form.supplyPrice ? Number(form.supplyPrice) : p.supplyPrice,
+        shippingFee: form.shippingFee ? Number(form.shippingFee) : p.shippingFee,
+        freeShippingThreshold: form.freeShippingThreshold ? Number(form.freeShippingThreshold) : p.freeShippingThreshold,
+      } as Product : p));
     } else {
       setProducts(prev => [{
         id: String(Date.now()), name: form.name!, brand: form.brand!,
