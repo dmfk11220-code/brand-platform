@@ -1,10 +1,16 @@
 'use client';
 
-import { useState } from 'react';
-import { Download, Search, TrendingUp, CheckCircle2, Circle, AlertCircle, FileText, ChevronDown, ChevronUp } from 'lucide-react';
+import { useState, useRef, useCallback } from 'react';
+import { Download, Search, TrendingUp, CheckCircle2, Circle, AlertCircle, FileText, ChevronDown, ChevronUp, X, Upload, ImageIcon, BarChart2 } from 'lucide-react';
 
 type TaxType = '프리랜서' | '일반과세' | '간이과세';
 type SettlementStatus = '정산완료' | '정산대기' | '서류미비';
+
+interface SalesItem {
+  category: string;
+  amount: number;
+  color: string;
+}
 
 interface Settlement {
   id: string;
@@ -18,11 +24,12 @@ interface Settlement {
   paidAt: string;
   taxType: TaxType;
   docs: {
-    bankbook: boolean;       // 통장사본
-    idCard: boolean;         // 주민등록증 (프리랜서)
-    bizReg: boolean;         // 사업자등록증 (사업자)
-    stamp: boolean;          // 도장 (일반과세)
+    bankbook: boolean;
+    idCard: boolean;
+    bizReg: boolean;
+    stamp: boolean;
   };
+  salesBreakdown: SalesItem[];
 }
 
 const TAX_TYPE_INFO: Record<TaxType, { label: string; color: string; process: string; docs: string[] }> = {
@@ -48,23 +55,156 @@ const TAX_TYPE_INFO: Record<TaxType, { label: string; color: string; process: st
 
 const mockSettlements: Settlement[] = [
   // 2025-04
-  { id: 'S001', creator: '레미니씬', handle: '@reminiscene_', month: '2025-04', sales: 8200000, commission: 12, amount: 7216000, status: '정산완료', paidAt: '2025-05-10', taxType: '일반과세', docs: { bankbook: true, idCard: false, bizReg: true, stamp: true } },
-  { id: 'S002', creator: '애정', handle: '@ae_jeong_', month: '2025-04', sales: 5640000, commission: 12, amount: 4963200, status: '정산완료', paidAt: '2025-05-10', taxType: '일반과세', docs: { bankbook: true, idCard: false, bizReg: true, stamp: true } },
-  { id: 'S003', creator: '김체리', handle: '@kimcherry_tt', month: '2025-04', sales: 3850000, commission: 12, amount: 3388000, status: '정산완료', paidAt: '2025-05-10', taxType: '프리랜서', docs: { bankbook: true, idCard: true, bizReg: false, stamp: false } },
-  { id: 'S004', creator: '진경', handle: '@jinkyoung_ig', month: '2025-04', sales: 3120000, commission: 12, amount: 2745600, status: '정산대기', paidAt: '-', taxType: '일반과세', docs: { bankbook: true, idCard: false, bizReg: true, stamp: false } },
-  { id: 'S005', creator: '이펠(최명)', handle: '@eiffel_choi', month: '2025-04', sales: 1680000, commission: 15, amount: 1428000, status: '정산대기', paidAt: '-', taxType: '프리랜서', docs: { bankbook: true, idCard: false, bizReg: false, stamp: false } },
-  { id: 'S006', creator: '뭉순임당', handle: '@moongsunimdang', month: '2025-04', sales: 1420000, commission: 12, amount: 1249600, status: '정산완료', paidAt: '2025-05-10', taxType: '일반과세', docs: { bankbook: true, idCard: false, bizReg: true, stamp: true } },
-  { id: 'S007', creator: '류스펜나', handle: '@ryuspenna', month: '2025-04', sales: 1240000, commission: 15, amount: 1054000, status: '서류미비', paidAt: '-', taxType: '프리랜서', docs: { bankbook: false, idCard: false, bizReg: false, stamp: false } },
-  { id: 'S008', creator: '인아짱', handle: '@inahjjang', month: '2025-04', sales: 980000, commission: 15, amount: 833000, status: '서류미비', paidAt: '-', taxType: '프리랜서', docs: { bankbook: false, idCard: false, bizReg: false, stamp: false } },
+  {
+    id: 'S001', creator: '레미니씬', handle: '@reminiscene_', month: '2025-04',
+    sales: 8200000, commission: 12, amount: 7216000, status: '정산완료', paidAt: '2025-05-10', taxType: '일반과세',
+    docs: { bankbook: true, idCard: false, bizReg: true, stamp: true },
+    salesBreakdown: [
+      { category: '브랜드딜', amount: 4500000, color: '#6366f1' },
+      { category: '라이브커머스', amount: 2100000, color: '#8b5cf6' },
+      { category: '콘텐츠 광고', amount: 1200000, color: '#a78bfa' },
+      { category: '자체상품', amount: 400000, color: '#c4b5fd' },
+    ],
+  },
+  {
+    id: 'S002', creator: '애정', handle: '@ae_jeong_', month: '2025-04',
+    sales: 5640000, commission: 12, amount: 4963200, status: '정산완료', paidAt: '2025-05-10', taxType: '일반과세',
+    docs: { bankbook: true, idCard: false, bizReg: true, stamp: true },
+    salesBreakdown: [
+      { category: '브랜드딜', amount: 3200000, color: '#6366f1' },
+      { category: '라이브커머스', amount: 1640000, color: '#8b5cf6' },
+      { category: '콘텐츠 광고', amount: 800000, color: '#a78bfa' },
+    ],
+  },
+  {
+    id: 'S003', creator: '김체리', handle: '@kimcherry_tt', month: '2025-04',
+    sales: 3850000, commission: 12, amount: 3388000, status: '정산완료', paidAt: '2025-05-10', taxType: '프리랜서',
+    docs: { bankbook: true, idCard: true, bizReg: false, stamp: false },
+    salesBreakdown: [
+      { category: '브랜드딜', amount: 2200000, color: '#3b82f6' },
+      { category: '틱톡 광고', amount: 980000, color: '#60a5fa' },
+      { category: '협찬', amount: 670000, color: '#93c5fd' },
+    ],
+  },
+  {
+    id: 'S004', creator: '진경', handle: '@jinkyoung_ig', month: '2025-04',
+    sales: 3120000, commission: 12, amount: 2745600, status: '정산대기', paidAt: '-', taxType: '일반과세',
+    docs: { bankbook: true, idCard: false, bizReg: true, stamp: false },
+    salesBreakdown: [
+      { category: '브랜드딜', amount: 1800000, color: '#6366f1' },
+      { category: '라이브커머스', amount: 900000, color: '#8b5cf6' },
+      { category: '협찬', amount: 420000, color: '#a78bfa' },
+    ],
+  },
+  {
+    id: 'S005', creator: '이펠(최명)', handle: '@eiffel_choi', month: '2025-04',
+    sales: 1680000, commission: 15, amount: 1428000, status: '정산대기', paidAt: '-', taxType: '프리랜서',
+    docs: { bankbook: true, idCard: false, bizReg: false, stamp: false },
+    salesBreakdown: [
+      { category: '브랜드딜', amount: 1100000, color: '#3b82f6' },
+      { category: '협찬', amount: 580000, color: '#60a5fa' },
+    ],
+  },
+  {
+    id: 'S006', creator: '뭉순임당', handle: '@moongsunimdang', month: '2025-04',
+    sales: 1420000, commission: 12, amount: 1249600, status: '정산완료', paidAt: '2025-05-10', taxType: '일반과세',
+    docs: { bankbook: true, idCard: false, bizReg: true, stamp: true },
+    salesBreakdown: [
+      { category: '유튜브 광고', amount: 820000, color: '#6366f1' },
+      { category: '브랜드딜', amount: 600000, color: '#8b5cf6' },
+    ],
+  },
+  {
+    id: 'S007', creator: '류스펜나', handle: '@ryuspenna', month: '2025-04',
+    sales: 1240000, commission: 15, amount: 1054000, status: '서류미비', paidAt: '-', taxType: '프리랜서',
+    docs: { bankbook: false, idCard: false, bizReg: false, stamp: false },
+    salesBreakdown: [
+      { category: '브랜드딜', amount: 900000, color: '#3b82f6' },
+      { category: '협찬', amount: 340000, color: '#60a5fa' },
+    ],
+  },
+  {
+    id: 'S008', creator: '인아짱', handle: '@inahjjang', month: '2025-04',
+    sales: 980000, commission: 15, amount: 833000, status: '서류미비', paidAt: '-', taxType: '프리랜서',
+    docs: { bankbook: false, idCard: false, bizReg: false, stamp: false },
+    salesBreakdown: [
+      { category: '브랜드딜', amount: 680000, color: '#3b82f6' },
+      { category: '유튜브 광고', amount: 300000, color: '#60a5fa' },
+    ],
+  },
   // 2025-03
-  { id: 'S009', creator: '레미니씬', handle: '@reminiscene_', month: '2025-03', sales: 7650000, commission: 12, amount: 6732000, status: '정산완료', paidAt: '2025-04-10', taxType: '일반과세', docs: { bankbook: true, idCard: false, bizReg: true, stamp: true } },
-  { id: 'S010', creator: '애정', handle: '@ae_jeong_', month: '2025-03', sales: 5120000, commission: 12, amount: 4505600, status: '정산완료', paidAt: '2025-04-10', taxType: '일반과세', docs: { bankbook: true, idCard: false, bizReg: true, stamp: true } },
-  { id: 'S011', creator: '김체리', handle: '@kimcherry_tt', month: '2025-03', sales: 3400000, commission: 12, amount: 2992000, status: '정산완료', paidAt: '2025-04-10', taxType: '프리랜서', docs: { bankbook: true, idCard: true, bizReg: false, stamp: false } },
-  { id: 'S012', creator: '진경', handle: '@jinkyoung_ig', month: '2025-03', sales: 2880000, commission: 12, amount: 2534400, status: '정산완료', paidAt: '2025-04-10', taxType: '일반과세', docs: { bankbook: true, idCard: false, bizReg: true, stamp: true } },
+  {
+    id: 'S009', creator: '레미니씬', handle: '@reminiscene_', month: '2025-03',
+    sales: 7650000, commission: 12, amount: 6732000, status: '정산완료', paidAt: '2025-04-10', taxType: '일반과세',
+    docs: { bankbook: true, idCard: false, bizReg: true, stamp: true },
+    salesBreakdown: [
+      { category: '브랜드딜', amount: 4200000, color: '#6366f1' },
+      { category: '라이브커머스', amount: 2000000, color: '#8b5cf6' },
+      { category: '콘텐츠 광고', amount: 1050000, color: '#a78bfa' },
+      { category: '자체상품', amount: 400000, color: '#c4b5fd' },
+    ],
+  },
+  {
+    id: 'S010', creator: '애정', handle: '@ae_jeong_', month: '2025-03',
+    sales: 5120000, commission: 12, amount: 4505600, status: '정산완료', paidAt: '2025-04-10', taxType: '일반과세',
+    docs: { bankbook: true, idCard: false, bizReg: true, stamp: true },
+    salesBreakdown: [
+      { category: '브랜드딜', amount: 2900000, color: '#6366f1' },
+      { category: '라이브커머스', amount: 1520000, color: '#8b5cf6' },
+      { category: '협찬', amount: 700000, color: '#a78bfa' },
+    ],
+  },
+  {
+    id: 'S011', creator: '김체리', handle: '@kimcherry_tt', month: '2025-03',
+    sales: 3400000, commission: 12, amount: 2992000, status: '정산완료', paidAt: '2025-04-10', taxType: '프리랜서',
+    docs: { bankbook: true, idCard: true, bizReg: false, stamp: false },
+    salesBreakdown: [
+      { category: '브랜드딜', amount: 1900000, color: '#3b82f6' },
+      { category: '틱톡 광고', amount: 900000, color: '#60a5fa' },
+      { category: '협찬', amount: 600000, color: '#93c5fd' },
+    ],
+  },
+  {
+    id: 'S012', creator: '진경', handle: '@jinkyoung_ig', month: '2025-03',
+    sales: 2880000, commission: 12, amount: 2534400, status: '정산완료', paidAt: '2025-04-10', taxType: '일반과세',
+    docs: { bankbook: true, idCard: false, bizReg: true, stamp: true },
+    salesBreakdown: [
+      { category: '브랜드딜', amount: 1600000, color: '#6366f1' },
+      { category: '라이브커머스', amount: 800000, color: '#8b5cf6' },
+      { category: '협찬', amount: 480000, color: '#a78bfa' },
+    ],
+  },
   // 2025-02
-  { id: 'S013', creator: '레미니씬', handle: '@reminiscene_', month: '2025-02', sales: 6900000, commission: 12, amount: 6072000, status: '정산완료', paidAt: '2025-03-10', taxType: '일반과세', docs: { bankbook: true, idCard: false, bizReg: true, stamp: true } },
-  { id: 'S014', creator: '애정', handle: '@ae_jeong_', month: '2025-02', sales: 4780000, commission: 12, amount: 4206400, status: '정산완료', paidAt: '2025-03-10', taxType: '일반과세', docs: { bankbook: true, idCard: false, bizReg: true, stamp: true } },
-  { id: 'S015', creator: '뭉순임당', handle: '@moongsunimdang', month: '2025-02', sales: 1580000, commission: 12, amount: 1390400, status: '정산완료', paidAt: '2025-03-10', taxType: '일반과세', docs: { bankbook: true, idCard: false, bizReg: true, stamp: true } },
+  {
+    id: 'S013', creator: '레미니씬', handle: '@reminiscene_', month: '2025-02',
+    sales: 6900000, commission: 12, amount: 6072000, status: '정산완료', paidAt: '2025-03-10', taxType: '일반과세',
+    docs: { bankbook: true, idCard: false, bizReg: true, stamp: true },
+    salesBreakdown: [
+      { category: '브랜드딜', amount: 3800000, color: '#6366f1' },
+      { category: '라이브커머스', amount: 1800000, color: '#8b5cf6' },
+      { category: '콘텐츠 광고', amount: 900000, color: '#a78bfa' },
+      { category: '자체상품', amount: 400000, color: '#c4b5fd' },
+    ],
+  },
+  {
+    id: 'S014', creator: '애정', handle: '@ae_jeong_', month: '2025-02',
+    sales: 4780000, commission: 12, amount: 4206400, status: '정산완료', paidAt: '2025-03-10', taxType: '일반과세',
+    docs: { bankbook: true, idCard: false, bizReg: true, stamp: true },
+    salesBreakdown: [
+      { category: '브랜드딜', amount: 2600000, color: '#6366f1' },
+      { category: '라이브커머스', amount: 1380000, color: '#8b5cf6' },
+      { category: '협찬', amount: 800000, color: '#a78bfa' },
+    ],
+  },
+  {
+    id: 'S015', creator: '뭉순임당', handle: '@moongsunimdang', month: '2025-02',
+    sales: 1580000, commission: 12, amount: 1390400, status: '정산완료', paidAt: '2025-03-10', taxType: '일반과세',
+    docs: { bankbook: true, idCard: false, bizReg: true, stamp: true },
+    salesBreakdown: [
+      { category: '유튜브 광고', amount: 950000, color: '#6366f1' },
+      { category: '브랜드딜', amount: 630000, color: '#8b5cf6' },
+    ],
+  },
 ];
 
 const months = ['2025-04', '2025-03', '2025-02'] as const;
@@ -75,33 +215,147 @@ const STATUS_STYLE: Record<SettlementStatus, string> = {
   '서류미비': 'bg-rose-500/15 text-rose-400',
 };
 
-function DocBadge({ checked, label }: { checked: boolean; label: string }) {
-  return (
-    <span className={`inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full ${checked ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'}`}>
-      {checked ? <CheckCircle2 size={9} /> : <Circle size={9} />}
-      {label}
-    </span>
-  );
-}
+type DocKey = 'bankbook' | 'idCard' | 'bizReg' | 'stamp';
 
-function getRequiredDocs(taxType: TaxType, docs: Settlement['docs']) {
+function getRequiredDocs(taxType: TaxType, docs: Settlement['docs']): { label: string; checked: boolean; key: DocKey }[] {
   if (taxType === '프리랜서') {
     return [
-      { label: '통장사본', checked: docs.bankbook },
-      { label: '주민등록증', checked: docs.idCard },
+      { label: '통장사본', checked: docs.bankbook, key: 'bankbook' },
+      { label: '주민등록증', checked: docs.idCard, key: 'idCard' },
     ];
   } else if (taxType === '일반과세') {
     return [
-      { label: '사업자등록증', checked: docs.bizReg },
-      { label: '통장사본', checked: docs.bankbook },
-      { label: '도장', checked: docs.stamp },
+      { label: '사업자등록증', checked: docs.bizReg, key: 'bizReg' },
+      { label: '통장사본', checked: docs.bankbook, key: 'bankbook' },
+      { label: '도장', checked: docs.stamp, key: 'stamp' },
     ];
   } else {
     return [
-      { label: '사업자등록증', checked: docs.bizReg },
-      { label: '통장사본', checked: docs.bankbook },
+      { label: '사업자등록증', checked: docs.bizReg, key: 'bizReg' },
+      { label: '통장사본', checked: docs.bankbook, key: 'bankbook' },
     ];
   }
+}
+
+/* ── 문서 이미지 모달 ── */
+interface DocModalProps {
+  docLabel: string;
+  imageUrl: string | null;
+  onClose: () => void;
+  onUpload: (dataUrl: string) => void;
+}
+
+function DocModal({ docLabel, imageUrl, onClose, onUpload }: DocModalProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [dragging, setDragging] = useState(false);
+
+  const handleFile = useCallback((file: File) => {
+    if (!file.type.startsWith('image/') && file.type !== 'application/pdf') return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      if (e.target?.result) onUpload(e.target.result as string);
+    };
+    reader.readAsDataURL(file);
+  }, [onUpload]);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setDragging(false);
+    const file = e.dataTransfer.files[0];
+    if (file) handleFile(file);
+  }, [handleFile]);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm" onClick={onClose}>
+      <div className="bg-[#1a1d27] rounded-2xl border border-white/10 w-[480px] max-h-[80vh] overflow-hidden shadow-2xl"
+        onClick={e => e.stopPropagation()}>
+        {/* 모달 헤더 */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-white/5">
+          <div className="flex items-center gap-2">
+            <FileText size={15} className="text-indigo-400" />
+            <span className="text-white font-semibold text-sm">{docLabel}</span>
+          </div>
+          <button onClick={onClose} className="text-slate-500 hover:text-white transition-colors">
+            <X size={16} />
+          </button>
+        </div>
+
+        <div className="p-6">
+          {imageUrl ? (
+            /* 이미지 미리보기 */
+            <div className="flex flex-col gap-4">
+              <div className="rounded-xl overflow-hidden bg-black/30 border border-white/5 flex items-center justify-center min-h-[260px]">
+                {imageUrl.startsWith('data:application/pdf') ? (
+                  <div className="flex flex-col items-center gap-3 py-12 text-slate-400">
+                    <FileText size={48} className="text-slate-600" />
+                    <p className="text-sm">PDF 파일 업로드됨</p>
+                  </div>
+                ) : (
+                  <img src={imageUrl} alt={docLabel} className="max-w-full max-h-[340px] object-contain" />
+                )}
+              </div>
+              <button
+                onClick={() => inputRef.current?.click()}
+                className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg border border-white/10 text-slate-400 hover:text-white hover:border-white/20 text-sm transition-colors">
+                <Upload size={14} /> 파일 교체
+              </button>
+            </div>
+          ) : (
+            /* 업로드 영역 */
+            <div
+              onDragOver={e => { e.preventDefault(); setDragging(true); }}
+              onDragLeave={() => setDragging(false)}
+              onDrop={handleDrop}
+              onClick={() => inputRef.current?.click()}
+              className={`flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed cursor-pointer transition-colors min-h-[220px] ${
+                dragging ? 'border-indigo-500 bg-indigo-500/10' : 'border-white/10 hover:border-white/20 bg-white/[0.02] hover:bg-white/[0.04]'
+              }`}>
+              <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center">
+                <ImageIcon size={22} className="text-slate-500" />
+              </div>
+              <div className="text-center">
+                <p className="text-white text-sm font-medium mb-1">이미지 또는 PDF 업로드</p>
+                <p className="text-slate-500 text-xs">클릭하거나 파일을 드래그하세요</p>
+              </div>
+              <p className="text-slate-600 text-[11px]">JPG, PNG, PDF 지원</p>
+            </div>
+          )}
+        </div>
+
+        <input ref={inputRef} type="file" accept="image/*,application/pdf" className="hidden"
+          onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); }} />
+      </div>
+    </div>
+  );
+}
+
+/* ── 매출 내역 바 ── */
+function SalesBreakdownBar({ items, total }: { items: SalesItem[]; total: number }) {
+  return (
+    <div className="flex flex-col gap-3">
+      {/* 스택 바 */}
+      <div className="flex h-2 rounded-full overflow-hidden gap-px">
+        {items.map(item => (
+          <div
+            key={item.category}
+            style={{ width: `${(item.amount / total) * 100}%`, backgroundColor: item.color }}
+            className="transition-all"
+          />
+        ))}
+      </div>
+      {/* 범례 */}
+      <div className="flex flex-wrap gap-x-4 gap-y-2">
+        {items.map(item => (
+          <div key={item.category} className="flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
+            <span className="text-slate-400 text-[11px]">{item.category}</span>
+            <span className="text-white text-[11px] font-medium">₩{item.amount.toLocaleString()}</span>
+            <span className="text-slate-600 text-[10px]">({Math.round((item.amount / total) * 100)}%)</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 export default function SettlementPage() {
@@ -109,6 +363,10 @@ export default function SettlementPage() {
   const [search, setSearch] = useState('');
   const [tab, setTab] = useState<'list' | 'guide'>('list');
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
+  // 문서 이미지: key = `${settlementId}-${docKey}`
+  const [docImages, setDocImages] = useState<Record<string, string>>({});
+  // 현재 열린 모달
+  const [docModal, setDocModal] = useState<{ settlementId: string; docKey: DocKey; label: string } | null>(null);
 
   const filtered = mockSettlements.filter(s =>
     s.month === selectedMonth &&
@@ -120,8 +378,22 @@ export default function SettlementPage() {
   const pendingCount = filtered.filter(s => s.status === '정산대기').length;
   const missingDocsCount = filtered.filter(s => s.status === '서류미비').length;
 
+  const modalKey = docModal ? `${docModal.settlementId}-${docModal.docKey}` : '';
+
   return (
     <div className="p-8">
+      {/* 문서 이미지 모달 */}
+      {docModal && (
+        <DocModal
+          docLabel={docModal.label}
+          imageUrl={docImages[modalKey] ?? null}
+          onClose={() => setDocModal(null)}
+          onUpload={dataUrl => {
+            setDocImages(prev => ({ ...prev, [modalKey]: dataUrl }));
+          }}
+        />
+      )}
+
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -264,14 +536,59 @@ export default function SettlementPage() {
                           </button>
                         </td>
                       </tr>
+
+                      {/* 확장 영역 */}
                       {isExpanded && (
                         <tr key={`${s.id}-detail`} className="bg-white/[0.015]">
-                          <td colSpan={10} className="px-6 py-4">
-                            <p className="text-xs font-semibold text-slate-400 mb-3 uppercase tracking-wider">서류 체크리스트</p>
-                            <div className="flex flex-wrap gap-2">
-                              {requiredDocs.map(doc => (
-                                <DocBadge key={doc.label} checked={doc.checked} label={doc.label} />
-                              ))}
+                          <td colSpan={10} className="px-6 py-5">
+                            <div className="flex gap-8">
+                              {/* 서류 체크리스트 */}
+                              <div className="flex-shrink-0">
+                                <p className="text-[11px] font-semibold text-slate-400 mb-3 uppercase tracking-wider">서류 체크리스트</p>
+                                <div className="flex flex-col gap-2">
+                                  {requiredDocs.map(doc => {
+                                    const imgKey = `${s.id}-${doc.key}`;
+                                    const hasImage = !!docImages[imgKey];
+                                    return (
+                                      <button
+                                        key={doc.label}
+                                        onClick={() => setDocModal({ settlementId: s.id, docKey: doc.key, label: doc.label })}
+                                        className={`inline-flex items-center gap-1.5 text-[11px] font-medium px-3 py-1.5 rounded-lg border transition-all hover:scale-[1.02] ${
+                                          doc.checked
+                                            ? hasImage
+                                              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/15'
+                                              : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/15'
+                                            : 'bg-rose-500/10 text-rose-400 border-rose-500/20 hover:bg-rose-500/15'
+                                        }`}>
+                                        {doc.checked
+                                          ? <CheckCircle2 size={11} />
+                                          : <Circle size={11} />
+                                        }
+                                        {doc.label}
+                                        {hasImage && (
+                                          <span className="ml-1 text-[9px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded">이미지</span>
+                                        )}
+                                        {!hasImage && (
+                                          <Upload size={9} className="ml-1 opacity-50" />
+                                        )}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+
+                              {/* 구분선 */}
+                              <div className="w-px bg-white/5 self-stretch" />
+
+                              {/* 매출 내역 */}
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-3">
+                                  <BarChart2 size={13} className="text-slate-400" />
+                                  <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">매출 내역</p>
+                                  <span className="text-[10px] text-slate-600">— {s.month} 기준</span>
+                                </div>
+                                <SalesBreakdownBar items={s.salesBreakdown} total={s.sales} />
+                              </div>
                             </div>
                           </td>
                         </tr>
