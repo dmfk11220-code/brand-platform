@@ -358,6 +358,59 @@ async function downloadCreatorSettlement(
   a.click(); URL.revokeObjectURL(url);
 }
 
+// ── RS 크리에이터 정산서 발급 ─────────────────────────────
+async function downloadRSCreatorSettlement(
+  creatorName: string, brandName: string, period: string,
+  revenue: number, calc: ReturnType<typeof calcRS>,
+  dhRatio: number, crRatio: number, rsRate: number
+) {
+  const XLSX = await import('xlsx');
+  const wb = XLSX.utils.book_new();
+
+  const issuedDate = new Date();
+  const totalRatio = dhRatio + crRatio;
+
+  // ── 시트1: 수수료 정산서 ──
+  const ws1Data: unknown[][] = [
+    [null, `${creatorName}X${brandName} 마켓 정산서`],
+    [null, '㈜ 두호코퍼레이션', issuedDate],
+    [null, '내용', `${creatorName}X${brandName} 마켓 정산서`],
+    [null, '판매기간', period],
+    [null, '총 매출 (VAT 포함)', revenue],
+    [null, `수수료율 (RS ${Math.round(rsRate * 100)}%)`, calc.rsFee],
+    [null, '부가세 제외 수수료', calc.rsFeeExclVat],
+    [null, `${creatorName} 정산 금액 (${crRatio}/${totalRatio})`, calc.crPaid],
+    [null, `DH 정산 금액 (${dhRatio}/${totalRatio})`, calc.dhProfit],
+    [null, '비고사항', `총 매출에서 RS 수수료율(${Math.round(rsRate * 100)}%)을 적용한 금액을 기준으로 정산하며, 부가가치세를 제외한 금액으로 계약 비율(DH ${dhRatio} : 크리에이터 ${crRatio})에 따라 분배한다.`],
+  ];
+  const ws1 = XLSX.utils.aoa_to_sheet(ws1Data);
+  ws1['!cols'] = [{ wch: 3 }, { wch: 34 }, { wch: 18 }];
+  XLSX.utils.book_append_sheet(wb, ws1, '수수료 정산서');
+
+  // ── 시트2: 최종 정산서 (크리에이터 지급분, 3.3% 차감) ──
+  const crPaidFinal = Math.round(calc.crPaid * 0.967);
+  const tax33 = calc.crPaid - crPaidFinal;
+  const ws2Data: unknown[][] = [
+    [null, `${creatorName} 최종 정산서`],
+    [null, '㈜ 두호코퍼레이션', issuedDate],
+    [null, `수수료 (${creatorName} 정산 건)`, calc.crPaid],
+    [null, '합계', calc.crPaid],
+    [null, '사업소득세 (3.3%)', tax33],
+    [null, '정산금액 (원천징수 후)', crPaidFinal],
+    [null, '비고사항', `해당 금액은 3.3%를 공제한 금액으로 지급한다.`],
+  ];
+  const ws2 = XLSX.utils.aoa_to_sheet(ws2Data);
+  ws2['!cols'] = [{ wch: 3 }, { wch: 34 }, { wch: 18 }];
+  XLSX.utils.book_append_sheet(wb, ws2, '최종 정산서');
+
+  const buf = XLSX.write(wb, { type: 'array', bookType: 'xlsx' });
+  const blob = new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url;
+  a.download = `${issuedDate.toLocaleDateString('ko-KR').replace(/\. /g, '').replace('.', '').slice(2)}_${creatorName}${brandName}마켓정산서(DH).xlsx`;
+  a.click(); URL.revokeObjectURL(url);
+}
+
 // ── Excel 파싱 (브랜드몰/타 플랫폼 정산서 수신) ─────────
 async function parseSettlementExcel(file: File): Promise<ParsedCandidate[]> {
   const XLSX = await import('xlsx');
@@ -611,6 +664,8 @@ function SettlementUploadModal({
   const [picked, setPicked] = useState<ParsedCandidate | null>(null);
   const [drag, setDrag] = useState(false);
   const [manualRevenue, setManualRevenue] = useState('');
+  const [period, setPeriod] = useState(`${product.marketStart ?? ''} ~ ${product.marketEnd ?? ''}`);
+  const [downloading, setDownloading] = useState(false);
 
   const handleFile = useCallback(async (file: File) => {
     setLoading(true);
@@ -634,6 +689,17 @@ function SettlementUploadModal({
   const handleApply = () => {
     if (!confirmRevenue) return alert('거래액을 선택하거나 입력해주세요.');
     onApply(confirmRevenue, calc?.crPaid ?? product.crPaid ?? 0, calc?.dhProfit ?? product.dhProfit ?? 0);
+  };
+
+  const handleDownloadRSCreator = async () => {
+    if (!calc) return;
+    setDownloading(true);
+    await downloadRSCreatorSettlement(
+      product.creator, product.brand, period,
+      confirmRevenue, calc,
+      product.dhRatio ?? 3, product.crRatio ?? 7, product.rsRate ?? 0
+    );
+    setDownloading(false);
   };
 
   return (
@@ -731,23 +797,55 @@ function SettlementUploadModal({
                 <button onClick={() => { setPicked(null); setStep(candidates.length > 0 ? 'pick' : 'upload'); }} className="text-[11px] text-indigo-500 hover:underline">변경</button>
               </div>
               {hasRS && calc && (
-                <div className="bg-violet-50/60 border border-violet-100 rounded-xl p-4 flex flex-col gap-2.5">
-                  <p className="text-[11px] font-bold text-violet-700 uppercase tracking-wider">RS 자동 계산</p>
-                  <div className="grid grid-cols-2 gap-3">
-                    {[
-                      { label: 'RS 수수료', value: calc.rsFee, sub: `거래액 × ${Math.round((product.rsRate ?? 0) * 100)}%` },
-                      { label: 'RS 수수료 (VAT 제외)', value: calc.rsFeeExclVat, sub: '÷ 1.1' },
-                      { label: '크리에이터 지급', value: calc.crPaid, sub: `× ${product.crRatio}/${(product.dhRatio ?? 0) + (product.crRatio ?? 0)}`, highlight: 'blue' as const },
-                      { label: 'DH 이익', value: calc.dhProfit, sub: `× ${product.dhRatio}/${(product.dhRatio ?? 0) + (product.crRatio ?? 0)}`, highlight: 'indigo' as const },
-                    ].map(item => (
-                      <div key={item.label} className="bg-white rounded-lg border border-violet-100 px-3 py-2.5">
-                        <p className="text-[10px] text-slate-400 font-semibold">{item.label}</p>
-                        <p className={`text-[14px] font-bold mt-0.5 ${item.highlight === 'blue' ? 'text-blue-600' : item.highlight === 'indigo' ? 'text-indigo-600' : 'text-slate-700'}`}>₩{item.value.toLocaleString()}</p>
-                        <p className="text-[10px] text-slate-400">{item.sub}</p>
-                      </div>
-                    ))}
+                <>
+                  <div className="bg-violet-50/60 border border-violet-100 rounded-xl p-4 flex flex-col gap-2.5">
+                    <p className="text-[11px] font-bold text-violet-700 uppercase tracking-wider">RS 자동 계산</p>
+                    <div className="grid grid-cols-2 gap-3">
+                      {[
+                        { label: 'RS 수수료', value: calc.rsFee, sub: `거래액 × ${Math.round((product.rsRate ?? 0) * 100)}%` },
+                        { label: 'RS 수수료 (VAT 제외)', value: calc.rsFeeExclVat, sub: '÷ 1.1' },
+                        { label: '크리에이터 지급', value: calc.crPaid, sub: `× ${product.crRatio}/${(product.dhRatio ?? 0) + (product.crRatio ?? 0)}`, highlight: 'blue' as const },
+                        { label: 'DH 이익', value: calc.dhProfit, sub: `× ${product.dhRatio}/${(product.dhRatio ?? 0) + (product.crRatio ?? 0)}`, highlight: 'indigo' as const },
+                      ].map(item => (
+                        <div key={item.label} className="bg-white rounded-lg border border-violet-100 px-3 py-2.5">
+                          <p className="text-[10px] text-slate-400 font-semibold">{item.label}</p>
+                          <p className={`text-[14px] font-bold mt-0.5 ${item.highlight === 'blue' ? 'text-blue-600' : item.highlight === 'indigo' ? 'text-indigo-600' : 'text-slate-700'}`}>₩{item.value.toLocaleString()}</p>
+                          <p className="text-[10px] text-slate-400">{item.sub}</p>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                  {/* 크리에이터 정산서 발급 */}
+                  <div className="bg-indigo-50/60 border border-indigo-100 rounded-xl p-4 flex flex-col gap-3">
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-2 h-2 rounded-full bg-indigo-400" />
+                      <p className="text-[11px] font-bold text-indigo-700">크리에이터 정산서 발급</p>
+                      <span className="text-[10px] text-indigo-400">→ {product.creator}</span>
+                    </div>
+                    <div>
+                      <p className="text-[11.5px] font-semibold text-slate-600 mb-1.5">판매 기간</p>
+                      <input value={period} onChange={e => setPeriod(e.target.value)} className={inputCls} placeholder="예: 2026.04.27 ~ 2026.05.01" />
+                    </div>
+                    <div className="space-y-1.5 text-xs">
+                      <div className="flex justify-between">
+                        <span className="text-slate-500">크리에이터 지급 (세전)</span>
+                        <span className="font-semibold text-slate-700">₩{calc.crPaid.toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-500">사업소득세 (3.3%)</span>
+                        <span className="font-semibold text-rose-500">−₩{(calc.crPaid - Math.round(calc.crPaid * 0.967)).toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between border-t border-indigo-200 pt-1.5">
+                        <span className="text-indigo-700 font-bold">최종 지급액 (원천징수 후)</span>
+                        <span className="font-bold text-indigo-700">₩{Math.round(calc.crPaid * 0.967).toLocaleString()}</span>
+                      </div>
+                    </div>
+                    <button onClick={handleDownloadRSCreator} disabled={downloading}
+                      className="w-full flex items-center justify-center gap-1.5 py-2 text-xs font-bold bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 disabled:opacity-60">
+                      {downloading ? '생성 중...' : <><FileDown size={12} /> 크리에이터 정산서 엑셀 다운로드</>}
+                    </button>
+                  </div>
+                </>
               )}
             </div>
           )}
