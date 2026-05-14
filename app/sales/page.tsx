@@ -92,24 +92,45 @@ function pct(part: number, total: number) {
 
 // ── 바 차트 (CSS) ─────────────────────────────────────
 const BAR_MAX_HEIGHT = 140; // px
+// 월별 그라데이션 컬러 팔레트 (11월→4월 순)
+const BAR_COLORS = [
+  '#4f46e5', // 11
+  '#6366f1', // 12
+  '#7c3aed', // 01
+  '#8b5cf6', // 02
+  '#a78bfa', // 03
+  '#c4b5fd', // 04 (가장 최신 → 가장 밝게)
+].reverse(); // 최신월이 앞에 오게 reverse
 
-function MonthlyBarChart({ data, selected }: { data: MonthlySales[]; selected: Month }) {
-  const maxTotal = Math.max(...data.map(d => d.total));
+function MonthlyBarChart({ data, selected, onSelect }: {
+  data: MonthlySales[];
+  selected: Month;
+  onSelect: (m: Month) => void;
+}) {
+  const sorted = [...data].reverse(); // 오래된 순 → 최신 순
+  const maxTotal = Math.max(...sorted.map(d => d.total));
   return (
-    <div className="flex items-end gap-2 h-[180px] px-2">
-      {[...data].reverse().map(d => {
-        const h = maxTotal === 0 ? 0 : Math.round((d.total / maxTotal) * BAR_MAX_HEIGHT);
+    <div className="flex items-end gap-3 h-[200px] px-2">
+      {sorted.map((d, i) => {
+        const h = maxTotal === 0 ? 4 : Math.max(8, Math.round((d.total / maxTotal) * BAR_MAX_HEIGHT));
         const isSelected = d.month === selected;
+        const color = BAR_COLORS[i % BAR_COLORS.length];
         return (
-          <div key={d.month} className="flex flex-col items-center gap-2 flex-1">
-            <span className={`text-[10px] font-medium ${isSelected ? 'text-white' : 'text-slate-600'}`}>
+          <div key={d.month} className="flex flex-col items-center gap-2 flex-1 cursor-pointer group"
+            onClick={() => onSelect(d.month)}>
+            {/* 금액 레이블 */}
+            <span className="text-[11px] font-bold text-white opacity-90 group-hover:opacity-100 transition-opacity">
               {fmt(d.total)}
             </span>
-            <div
-              style={{ height: `${h}px` }}
-              className={`w-full rounded-t-md transition-all ${isSelected ? 'bg-indigo-500' : 'bg-white/5 hover:bg-white/10'}`}
-            />
-            <span className={`text-[10px] ${isSelected ? 'text-indigo-300' : 'text-slate-600'}`}>
+            {/* 바 */}
+            <div className="relative w-full flex items-end" style={{ height: `${BAR_MAX_HEIGHT}px` }}>
+              <div
+                style={{ height: `${h}px`, backgroundColor: color }}
+                className={`w-full rounded-t-lg transition-all duration-200 ${isSelected ? 'brightness-110 ring-2 ring-white/30 ring-offset-1 ring-offset-transparent' : 'opacity-80 hover:opacity-100'}`}
+              />
+            </div>
+            {/* 월 레이블 */}
+            <span className={`text-[11px] font-semibold transition-colors ${isSelected ? 'text-white' : 'text-slate-400'}`}>
               {d.month.slice(5)}월
             </span>
           </div>
@@ -149,7 +170,7 @@ export default function SalesPage() {
   const net = current.total - commission;
 
   return (
-    <div className="p-8">
+    <div className="p-8 min-h-screen bg-[#0f1117]">
       {/* 헤더 */}
       <div className="mb-7">
         <h1 className="text-2xl font-bold text-white mb-1">매출 카테고리</h1>
@@ -162,18 +183,9 @@ export default function SalesPage() {
         <div className="col-span-2 bg-[#1a1d27] rounded-xl border border-white/5 p-6">
           <div className="flex items-center justify-between mb-5">
             <p className="text-sm font-semibold text-white">월별 매출 추이</p>
-            <div className="flex gap-1">
-              {MONTHLY.map(m => (
-                <button key={m.month} onClick={() => setSelectedMonth(m.month)}
-                  className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors ${
-                    selectedMonth === m.month ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white'
-                  }`}>
-                  {m.month.slice(5)}월
-                </button>
-              ))}
-            </div>
+            <p className="text-[11px] text-slate-500">바를 클릭하면 해당 월 상세 조회</p>
           </div>
-          <MonthlyBarChart data={MONTHLY} selected={selectedMonth} />
+          <MonthlyBarChart data={MONTHLY} selected={selectedMonth} onSelect={setSelectedMonth} />
         </div>
 
         {/* 이번달 요약 */}

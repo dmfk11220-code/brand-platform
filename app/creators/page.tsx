@@ -30,21 +30,21 @@ interface Creator {
 }
 
 const mockCreators: Creator[] = [
-  { id: '41', name: '레미니씬', handle: '@reminiscene_', platform: '인스타그램', category: '패션', followers: 7777000, followersDisplay: 'IG 778만 · TT 41.7만', commissionRate: 12, phone: '', hashtags: ['#패션', '#뷰티', '#필터'], status: '활성', joinedAt: '2024-01-01', taxType: '일반과세', contract: '전속', igUrl: 'https://www.instagram.com/reminiscene_', ttUrl: 'https://www.tiktok.com/@reminiscene_' },
-  { id: '97', name: '애정', handle: '@ae_jeong_', platform: '유튜브', category: '먹방', followers: 3480000, followersDisplay: 'YT 348만 · TT 270만 · IG 35만', commissionRate: 12, phone: '', hashtags: ['#먹방', '#푸드'], status: '활성', joinedAt: '2024-01-01', taxType: '일반과세', contract: '전속', ytUrl: 'https://www.youtube.com/@ae_jeong_', ttUrl: 'https://www.tiktok.com/@ae_jeong_', igUrl: 'https://www.instagram.com/ae_jeong_' },
-  { id: '18', name: '김체리', handle: '@kimcherry_tt', platform: '틱톡', category: '댄스', followers: 2000000, followersDisplay: 'TT 200만 · YT 12.1만 · IG 16.1만', commissionRate: 8, phone: '', hashtags: ['#댄스', '#챌린지'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속', ttUrl: 'https://www.tiktok.com/@kimcherry_tt', ytUrl: 'https://www.youtube.com/@kimcherry_tt', igUrl: 'https://www.instagram.com/kimcherry_tt' },
-  { id: '20', name: '진경', handle: '@jinkyoung_ig', platform: '인스타그램', category: '일상', followers: 1583000, followersDisplay: 'IG 158만 · YT 44.7만', commissionRate: 12, phone: '', hashtags: ['#일상', '#라이프'], status: '활성', joinedAt: '2024-01-01', taxType: '일반과세', contract: '전속', igUrl: 'https://www.instagram.com/jinkyoung_ig', ytUrl: 'https://www.youtube.com/@jinkyoung_ig' },
-  { id: '35', name: '이펠(최명)', handle: '@eiffel_choi', platform: '틱톡', category: '음악', followers: 843600, followersDisplay: 'TT 84.4만 · IG 31.4만', commissionRate: 8, phone: '', hashtags: ['#음악', '#커버'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속', ttUrl: 'https://www.tiktok.com/@eiffel_choi', igUrl: 'https://www.instagram.com/eiffel_choi' },
-  { id: '2', name: '류스펜나', handle: '@cornu_ryu', platform: '유튜브', category: '일상', followers: 688000, followersDisplay: 'YT 68.8만 · TT 19.4만 · IG 20.9만', commissionRate: 8, phone: '', hashtags: ['#일상', '#뷰티', '#여행'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속', ytUrl: 'https://www.youtube.com/@cornu_ryu', ttUrl: 'https://www.tiktok.com/@cornu_ryu', igUrl: 'https://www.instagram.com/cornu_ryu' },
-  { id: '6', name: '켈리', handle: '@kelly_tt', platform: '틱톡', category: '댄스', followers: 605000, followersDisplay: 'TT 60.5만 · YT 35.8만', commissionRate: 8, phone: '', hashtags: ['#댄스', '#챌린지'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속', ttUrl: 'https://www.tiktok.com/@kelly_tt', ytUrl: 'https://www.youtube.com/@kelly_tt' },
-  { id: '66', name: '송수이', handle: '@songsui', platform: '틱톡', category: '패션', followers: 685000, followersDisplay: 'TT 68.5만 · IG 28.5만', commissionRate: 8, phone: '', hashtags: ['#일상', '#뷰티', '#패션'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속', ttUrl: 'https://www.tiktok.com/@songsui', igUrl: 'https://www.instagram.com/songsui' },
-  { id: '1', name: '뭉순임당', handle: '@ahnhaeyo', platform: '유튜브', category: '먹방', followers: 698000, followersDisplay: 'YT 69.8만 · TT 15.3만 · IG 11.3만', commissionRate: 12, phone: '', hashtags: ['#일상', '#먹방', '#뷰티'], status: '활성', joinedAt: '2024-01-01', taxType: '일반과세', contract: '일부 전속', ytUrl: 'https://www.youtube.com/@ahnhaeyo', ttUrl: 'https://www.tiktok.com/@ahnhaeyo', igUrl: 'https://www.instagram.com/ahnhaeyo' },
-  { id: '126', name: '인아짱', handle: '@inahjjang', platform: '유튜브', category: '먹방', followers: 749000, followersDisplay: 'YT 74.9만 · IG 14.7만', commissionRate: 8, phone: '', hashtags: ['#먹방'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속', ytUrl: 'https://www.youtube.com/@inahjjang', igUrl: 'https://www.instagram.com/inahjjang' },
-  { id: '88', name: '제롬', handle: '@jerome_daily', platform: '유튜브', category: '일상', followers: 465000, followersDisplay: 'YT 46.5만 · IG 27.2만', commissionRate: 12, phone: '', hashtags: ['#일상', '#뷰티', '#패션'], status: '활성', joinedAt: '2024-01-01', taxType: '일반과세', contract: '전속', ytUrl: 'https://www.youtube.com/@jerome_daily', igUrl: 'https://www.instagram.com/jerome_daily' },
-  { id: '51', name: '츄베릅', handle: '@chuverb', platform: '유튜브', category: '먹방', followers: 376000, followersDisplay: 'YT 37.6만 · TT 17.4만 · IG 15.9만', commissionRate: 8, phone: '', hashtags: ['#먹방'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속', ytUrl: 'https://www.youtube.com/@chuverb', ttUrl: 'https://www.tiktok.com/@chuverb', igUrl: 'https://www.instagram.com/chuverb' },
-  { id: '10', name: '그대들의 센세', handle: '@grm_sense', platform: '유튜브', category: '일상', followers: 407800, followersDisplay: 'TT 40.8만 · YT 19.7만 · IG 7.8만', commissionRate: 8, phone: '', hashtags: ['#일상', '#외국어'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속', ttUrl: 'https://www.tiktok.com/@grm_sense', ytUrl: 'https://www.youtube.com/@grm_sense', igUrl: 'https://www.instagram.com/grm_sense' },
-  { id: '3', name: '융나', handle: '@yoong_na_99', platform: '유튜브', category: '일상', followers: 634000, followersDisplay: 'YT 63.4만 · IG 3.6만', commissionRate: 8, phone: '', hashtags: ['#일상'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속', ytUrl: 'https://www.youtube.com/@yoong_na_99', igUrl: 'https://www.instagram.com/yoong_na_99' },
-  { id: '67', name: '황소영', handle: '@hwangsoyoung', platform: '틱톡', category: '패션', followers: 510600, followersDisplay: 'TT 51.1만 · IG 16.2만', commissionRate: 8, phone: '', hashtags: ['#일상', '#패션'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속', ttUrl: 'https://www.tiktok.com/@hwangsoyoung', igUrl: 'https://www.instagram.com/hwangsoyoung' },
+  { id: '41', name: '레미니씬', handle: '@reminiscene_', platform: '인스타그램', category: '패션', followers: 7777000, followersDisplay: 'IG 778만 · TT 41.7만', commissionRate: 12, phone: '', hashtags: ['#패션', '#뷰티', '#필터'], status: '활성', joinedAt: '2024-01-01', taxType: '일반과세', contract: '전속' },
+  { id: '97', name: '애정', handle: '@ae_jeong_', platform: '유튜브', category: '먹방', followers: 3480000, followersDisplay: 'YT 348만 · TT 270만 · IG 35만', commissionRate: 12, phone: '', hashtags: ['#먹방', '#푸드'], status: '활성', joinedAt: '2024-01-01', taxType: '일반과세', contract: '전속' },
+  { id: '18', name: '김체리', handle: '@kimcherry_tt', platform: '틱톡', category: '댄스', followers: 2000000, followersDisplay: 'TT 200만 · YT 12.1만 · IG 16.1만', commissionRate: 8, phone: '', hashtags: ['#댄스', '#챌린지'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
+  { id: '20', name: '진경', handle: '@jinkyoung_ig', platform: '인스타그램', category: '일상', followers: 1583000, followersDisplay: 'IG 158만 · YT 44.7만', commissionRate: 12, phone: '', hashtags: ['#일상', '#라이프'], status: '활성', joinedAt: '2024-01-01', taxType: '일반과세', contract: '전속' },
+  { id: '35', name: '이펠(최명)', handle: '@eiffel_choi', platform: '틱톡', category: '음악', followers: 843600, followersDisplay: 'TT 84.4만 · IG 31.4만', commissionRate: 8, phone: '', hashtags: ['#음악', '#커버'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
+  { id: '2', name: '류스펜나', handle: '@cornu_ryu', platform: '유튜브', category: '일상', followers: 688000, followersDisplay: 'YT 68.8만 · TT 19.4만 · IG 20.9만', commissionRate: 8, phone: '', hashtags: ['#일상', '#뷰티', '#여행'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
+  { id: '6', name: '켈리', handle: '@kelly_tt', platform: '틱톡', category: '댄스', followers: 605000, followersDisplay: 'TT 60.5만 · YT 35.8만', commissionRate: 8, phone: '', hashtags: ['#댄스', '#챌린지'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
+  { id: '66', name: '송수이', handle: '@songsui', platform: '틱톡', category: '패션', followers: 685000, followersDisplay: 'TT 68.5만 · IG 28.5만', commissionRate: 8, phone: '', hashtags: ['#일상', '#뷰티', '#패션'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
+  { id: '1', name: '뭉순임당', handle: '@ahnhaeyo', platform: '유튜브', category: '먹방', followers: 698000, followersDisplay: 'YT 69.8만 · TT 15.3만 · IG 11.3만', commissionRate: 12, phone: '', hashtags: ['#일상', '#먹방', '#뷰티'], status: '활성', joinedAt: '2024-01-01', taxType: '일반과세', contract: '일부 전속' },
+  { id: '126', name: '인아짱', handle: '@inahjjang', platform: '유튜브', category: '먹방', followers: 749000, followersDisplay: 'YT 74.9만 · IG 14.7만', commissionRate: 8, phone: '', hashtags: ['#먹방'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
+  { id: '88', name: '제롬', handle: '@jerome_daily', platform: '유튜브', category: '일상', followers: 465000, followersDisplay: 'YT 46.5만 · IG 27.2만', commissionRate: 12, phone: '', hashtags: ['#일상', '#뷰티', '#패션'], status: '활성', joinedAt: '2024-01-01', taxType: '일반과세', contract: '전속' },
+  { id: '51', name: '츄베릅', handle: '@chuverb', platform: '유튜브', category: '먹방', followers: 376000, followersDisplay: 'YT 37.6만 · TT 17.4만 · IG 15.9만', commissionRate: 8, phone: '', hashtags: ['#먹방'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
+  { id: '10', name: '그대들의 센세', handle: '@grm_sense', platform: '유튜브', category: '일상', followers: 407800, followersDisplay: 'TT 40.8만 · YT 19.7만 · IG 7.8만', commissionRate: 8, phone: '', hashtags: ['#일상', '#외국어'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
+  { id: '3', name: '융나', handle: '@yoong_na_99', platform: '유튜브', category: '일상', followers: 634000, followersDisplay: 'YT 63.4만 · IG 3.6만', commissionRate: 8, phone: '', hashtags: ['#일상'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
+  { id: '67', name: '황소영', handle: '@hwangsoyoung', platform: '틱톡', category: '패션', followers: 510600, followersDisplay: 'TT 51.1만 · IG 16.2만', commissionRate: 8, phone: '', hashtags: ['#일상', '#패션'], status: '활성', joinedAt: '2024-01-01', taxType: '프리랜서', contract: '전속' },
 ];
 
 const PLATFORMS: Platform[] = ['인스타그램', '유튜브', '틱톡', '블로그'];
@@ -170,6 +170,9 @@ export default function CreatorsPage() {
         taxType: form.taxType as TaxType || '프리랜서',
         contract: form.contract as ContractType || '전속',
         joinedAt: new Date().toISOString().slice(0, 10),
+        igUrl: form.igUrl || undefined,
+        ttUrl: form.ttUrl || undefined,
+        ytUrl: form.ytUrl || undefined,
       }, ...prev]);
     }
     setModalOpen(false);
@@ -369,6 +372,23 @@ export default function CreatorsPage() {
                 <input value={form.hashtagInput || ''} onChange={e => set('hashtagInput', e.target.value)}
                   placeholder="#패션 #뷰티 (스페이스로 구분)" className={inputCls} />
               </Field>
+              <div className="border-t border-slate-100 pt-3 mt-1">
+                <p className="text-[12px] font-semibold text-slate-400 mb-2.5">SNS 링크 (선택)</p>
+                <div className="grid grid-cols-1 gap-2.5">
+                  <Field label="📸 인스타그램 URL">
+                    <input value={form.igUrl || ''} onChange={e => set('igUrl', e.target.value)}
+                      placeholder="https://www.instagram.com/handle" className={inputCls} />
+                  </Field>
+                  <Field label="🎵 틱톡 URL">
+                    <input value={form.ttUrl || ''} onChange={e => set('ttUrl', e.target.value)}
+                      placeholder="https://www.tiktok.com/@handle" className={inputCls} />
+                  </Field>
+                  <Field label="▶️ 유튜브 URL">
+                    <input value={form.ytUrl || ''} onChange={e => set('ytUrl', e.target.value)}
+                      placeholder="https://www.youtube.com/@handle" className={inputCls} />
+                  </Field>
+                </div>
+              </div>
             </div>
             <div className="flex justify-end gap-2 px-7 py-5 border-t border-slate-100">
               <button onClick={() => setModalOpen(false)} className="px-4 py-2 text-sm font-semibold text-indigo-500 border border-indigo-300 rounded-lg hover:bg-indigo-50">취소</button>

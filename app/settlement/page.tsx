@@ -381,7 +381,7 @@ export default function SettlementPage() {
   const modalKey = docModal ? `${docModal.settlementId}-${docModal.docKey}` : '';
 
   return (
-    <div className="p-8">
+    <div className="p-8 min-h-screen bg-[#0f1117]">
       {/* 문서 이미지 모달 */}
       {docModal && (
         <DocModal

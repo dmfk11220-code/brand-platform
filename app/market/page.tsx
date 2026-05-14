@@ -135,7 +135,7 @@ export default function MarketPage() {
   const dhMargin = totalRevenue > 0 ? ((totalDhProfit / totalRevenue) * 100).toFixed(1) : '-';
 
   return (
-    <div className="p-8">
+    <div className="p-8 min-h-screen bg-[#0f1117]">
       {/* 헤더 */}
       <div className="mb-7">
         <h1 className="text-2xl font-bold text-white mb-1">마켓 손익 관리</h1>
